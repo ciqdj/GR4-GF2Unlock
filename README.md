@@ -8,6 +8,17 @@
   <strong>The GR III's GF-2 Flash Mode, on your RICOH GR IV.<br>Focus on your subject; the camera sets the flash exposure.</strong>
 </p>
 
+<p align="center">
+  <strong>English</strong> |
+  <a href="README.ja.md">日本語</a> |
+  <a href="README.zh-CN.md">简体中文</a> |
+  <a href="README.zh-TW.md">繁體中文</a> |
+  <a href="README.ko.md">한국어</a> |
+  <a href="README.de.md">Deutsch</a> |
+  <a href="README.fr.md">Français</a> |
+  <a href="README.es.md">Español</a>
+</p>
+
 In firmware 2.10, RICOH gave the GR III **GF-2 Flash Mode**: with the small RICOH
 GF-2 flash attached, the camera fires the flash at a fixed power and works out
 aperture, ISO and shutter speed from the **focus distance**. The GR IV never got
@@ -101,9 +112,9 @@ button) offers:
 | Slow Sync+Red-eye | as before |
 | **GF-2 Flash Mode** | **fixed power; aperture, ISO and shutter speed from the focus distance** |
 
-- The new entry is labelled "GF-2 Flash Mode" in every menu language. When slow
-  sync is not available, the choices are Flash On, Flash On+Red-eye and GF-2
-  Flash Mode.
+- The new entry has its own name in every menu language, such as "GF-2 Flash
+  Mode" in English. When slow sync is not available, the choices are Flash On,
+  Flash On+Red-eye and GF-2 Flash Mode.
 - It works with the **GF-2 attached and switched on**, in **P, Tv, Av or M**.
   With no GF-2 recognised on the hot shoe, it works like Flash On.
 - The setting is kept when the camera is off, like any Flash Mode setting.
@@ -288,6 +299,7 @@ GR4-XPanUnlock files).
 ```
 GR4-GF2Unlock/
 ├── README.md           this guide
+├── README.*.md         this guide in Japanese, Chinese, Korean, German, French and Spanish
 ├── gr4_gf2unlock.py    the tool (Python 3.8+, no extra packages)
 └── assets/             the icon, and the script that draws it (render_icon.py)
 ```
