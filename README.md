@@ -42,6 +42,7 @@ version, on your own computer.
 | --- | --- |
 | See what the camera sets at each distance | [What to expect](#what-to-expect) |
 | Make the firmware (macOS, Windows, Linux) | [Make the firmware](#make-the-firmware) |
+| Use a flash other than the GF-2 | [Your own flash](#your-own-flash) |
 | Install it | [Put it on the camera](#put-it-on-the-camera) |
 | Find out what a firmware file contains | [Check a firmware file](#check-a-firmware-file) |
 | Go back to RICOH's firmware | [Going back to the official firmware](#going-back-to-the-official-firmware) |
@@ -61,13 +62,16 @@ version, on your own computer.
 
 With GF-2 Flash Mode selected, the camera fires the flash like Flash On, but at
 a **fixed power**. It then plans the exposure the way the GR III's GF-2 Flash
-Mode does: from the flash's guide number and the **focus distance** (autofocus
-or manual focus), within the GR IV's own aperture, ISO and flash-sync limits.
+Mode does: from the flash's **guide number** and the **focus distance**
+(autofocus or manual focus), within the GR IV's own aperture, ISO and
+flash-sync limits. The guide number is the GF-2's, 3, unless you give your own
+flash's when you make the firmware (see [Your own flash](#your-own-flash)).
 
 - **The power** is set by **Flash Output**: **Auto or 1/1** is full power,
   **1/4** is quarter power.
-- **With ISO Auto,** the camera keeps the aperture open and raises the ISO as
-  the subject gets farther away.
+- **With ISO Auto,** the camera opens the aperture and raises the ISO as the
+  subject gets farther away. Close up, it stays at the lowest ISO and closes
+  the aperture as far as the distance needs, down to f/16.
 - **With a fixed ISO,** the camera picks the aperture that suits the distance.
 - **The shutter speed** follows the light around the subject. It stays within
   flash sync, so the flash is always in the picture. The slowest is 1/32 s, or
@@ -84,14 +88,15 @@ round them slightly):
 
 | Distance | ISO Auto | Fixed ISO 400 |
 | ---: | --- | --- |
-| 0.5 m | f/4.8, ISO 100 | f/11.8 |
-| 1 m | f/2.8, ISO 100 | f/5.9 |
+| 0.5 m | f/5.9, ISO 100 | f/11.8 |
+| 1 m | f/3.0, ISO 100 | f/5.9 |
 | 2 m | f/2.8, ISO 367 | f/3.0 |
 | 3 m | f/2.8, ISO 800 | f/2.8 |
 | 5 m | f/2.8, ISO 2263 | f/2.8 (subject darker: out of flash range) |
 
 With Flash Output **1/4**, the ISO is about two stops higher, or the aperture
-about two stops wider.
+about two stops wider. With another guide number, the aperture scales with it:
+f-number = guide number × √(ISO / 100) ÷ distance, within f/2.8–f/16.
 
 > [!TIP]
 > **Check that the mode is active.** Select GF-2 Flash Mode, set mode **M**,
@@ -116,8 +121,8 @@ button) offers:
   Mode" in English. When slow sync is not available, the choices are Flash On,
   Flash On+Red-eye and GF-2 Flash Mode.
 - It works in **P, Tv, Av or M** with **any flash** on the hot shoe, as on the
-  GR III. The exposure is worked out for the GF-2's output: with a more
-  powerful flash, pictures come out brighter.
+  GR III. The exposure is worked out for the guide number in the firmware: the
+  GF-2's, or your own flash's (see [Your own flash](#your-own-flash)).
 - The setting is kept when the camera is off, like any Flash Mode setting.
 - The shooting screen shows the **Flash On** icon, and pictures record the flash
   as fired, like Flash On.
@@ -132,22 +137,25 @@ not have, and fixes a few weak spots:
 | | GR III 2.10 | GR4-GF2Unlock |
 | --- | --- | --- |
 | Flash power | Full power only: the GR III cannot control the GF-2 | Full or quarter power (Flash Output 1/1 or 1/4), with the exposure worked out for each |
+| Guide number | Always 3, the GF-2's | 3, or your own flash's (1 to 90) |
+| Close subjects with ISO Auto | Up to about 1 EV too bright closer than 0.7 m | The aperture the distance needs, down to f/16 |
 | ISO Auto with the ND filter on | The background comes out two stops too dark | The shutter speed allows for the ND filter, so the background is exposed correctly |
 | Very close subjects in bright light | Can ask for f/19, beyond the lens's f/16 | Stays within f/2.8–f/16 |
 | Flash sync | Can ask for a shutter speed faster than flash sync | Always within flash sync, which on the GR IV depends on the aperture |
 | Everything else | Turning the mode on replaces the normal flash behaviour | One Flash Mode choice among five: switch back to Flash On and the GR IV's automatic flash output whenever you like |
 
-More than 48,000 combinations of distance, ISO, ND filter, flash mode and light
-have been checked. None calls for an aperture outside f/2.8–f/16 or a shutter
-speed the flash cannot sync with.
+More than 200,000 combinations of distance, ISO, ND filter, flash mode, light
+and guide number (1 to 90) have been checked. None calls for an aperture
+outside f/2.8–f/16, an ISO outside your limits, or a shutter speed the flash
+cannot sync with.
 
 ## Before you start
 
 - **Camera:** RICOH GR IV (the standard colour model). Other models are not
   supported.
-- **Flash:** RICOH GF-2. The mode is designed for its fixed output. With
-  another flash, GF-2 Flash Mode still applies, but the exposure assumes the
-  GF-2's output. The other Flash Modes work with every flash as before.
+- **Flash:** RICOH GF-2, or any flash whose guide number you know (see
+  [Your own flash](#your-own-flash)). The other Flash Modes work with every
+  flash as before.
 - **Your camera must already be on firmware 1.11.** Check the version in the
   camera's setup menu.
   - Older version: first update to 1.11 the normal way, with RICOH's official file.
@@ -181,12 +189,33 @@ creates the GF-2 Flash Mode firmware and checks it. This takes about a minute.
 When everything is right, it ends with:
 
 ```
-wrote output/fwdc248b.bin  (SHA-256 660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75)
+wrote output/fwdc248b.bin  (SHA-256 225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22)
 ```
 
 If something is wrong, it prints `refused: …` and writes **nothing**: for
 example, a different firmware version, an already modified file, or a damaged
 download.
+
+### Your own flash
+
+GF-2 Flash Mode plans the exposure for the GF-2's guide number, 3. To use
+another flash, add its guide number with `--gn`:
+
+```sh
+python3 gr4_gf2unlock.py patch ~/Downloads/fwdc248b.bin --gn 12
+```
+
+- Give the guide number **at ISO 100, in metres**, at full power, from the
+  flash's manual. A guide number in feet: divide it by 3.3. A zoom flash: use
+  the guide number for the zoom setting you shoot at.
+- Allowed: **1 to 90**. The camera works in 1/16-stop steps, and the tool shows
+  the value it uses, for example `guide number: 11.81` for 12.
+- If the flash has its own power setting, set it to **full manual power**.
+  Flash Output 1/4 still means two stops less than the guide number.
+- The tool first makes the standard firmware and checks it as above, then
+  changes only the guide number. The SHA-256 is then different from the one
+  above; `check` shows the guide number of a file.
+- To change the guide number, make the firmware again and install it.
 
 ## Put it on the camera
 
@@ -239,8 +268,11 @@ stock.
 - **The camera cannot tell whether the GF-2 is switched on.** If it does not
   fire, the camera still sets the exposure for a flash picture, which will be
   too dark. The same is true on the GR III.
-- **Very close subjects** (closer than about 0.7 m) with ISO Auto come out
-  slightly bright: about +0.6 EV at 0.5 m. The GR III's mode behaves the same.
+- **A powerful flash close up:** when the subject is so close that even f/16
+  at the lowest ISO lets in too much flash, the picture comes out brighter than
+  planned. With ISO Auto and the ND filter set to Auto, the camera adds the ND
+  filter once it is about one stop too bright. Otherwise use Flash Output 1/4,
+  or step back.
 - **Fixed ISO and distant subjects:** once the aperture is fully open (f/2.8),
   a subject farther away gets darker. Raise the ISO, or use ISO Auto.
 - **Bright daylight:** the shutter speed cannot go faster than flash sync
@@ -253,8 +285,8 @@ stock.
   does not apply there.
 - **Not combinable with GR4-MonoUnlock or GR4-XPanUnlock.** Each tool starts
   from the official firmware, and this tool refuses their files.
-- **Updating from GR4-GF2Unlock 1.0.0:** install the new file the same way. There
-  is no need to go back to the official firmware first.
+- **Updating from an earlier GR4-GF2Unlock:** install the new file the same way.
+  There is no need to go back to the official firmware first.
 - **An official RICOH update removes GF-2 Flash Mode.** It replaces the whole
   firmware. Set another Flash Mode first (see
   [Going back](#going-back-to-the-official-firmware)).
@@ -270,8 +302,9 @@ python3 gr4_gf2unlock.py check path/to/fwdc248b.bin
 ```
 
 It tells you whether the file is the official 1.11, the GF-2 Flash Mode version
-made by this tool, or something else (it also recognises GR4-GF2Unlock 1.0.0,
-GR4-MonoUnlock and GR4-XPanUnlock files).
+made by this tool (with its guide number), or something else (it also
+recognises GR4-GF2Unlock 1.0.0 and 1.1.0, GR4-MonoUnlock and GR4-XPanUnlock
+files).
 
 ## Risks
 
@@ -292,14 +325,17 @@ GR4-MonoUnlock and GR4-XPanUnlock files).
 | GF-2 Flash Mode in the Flash Mode menu | tested on a GR IV 1.11 |
 | Exposure from the focus distance with the GF-2 | tested on a GR IV 1.11 |
 | GF-2 Flash Mode with other flashes | checked offline; please report your results |
+| Your own guide number (`--gn`) | checked offline; please report your results |
+| Close subjects with ISO Auto (exact aperture) | checked offline; please report your results |
 | ADJ lever and Fn button cycles | checked offline; please report your results |
 | Flash Output 1/4, fixed ISO, ND filter, slow sync | checked offline; please report your results |
 | Other Flash Modes unchanged | checked offline; please report your results |
 | Going back to the official 1.11 restores the camera completely | tested with earlier modified firmware on a GR IV 1.11; not yet with this version |
 | The tool reproduces the reference firmware exactly | tested |
 
-The camera tests were done with version 1.0.0. Version 1.1.0 differs from it
-only in the four instructions that limited GF-2 Flash Mode to the GF-2.
+The camera tests were done with version 1.0.0. Since then, GF-2 Flash Mode
+applies to any flash (1.1.0), and the guide number can be set and close
+subjects with ISO Auto get the exact aperture (1.2.0).
 
 ## For developers
 
@@ -314,5 +350,6 @@ GR4-GF2Unlock/
 | File | SHA-256 |
 | --- | --- |
 | official RICOH GR IV 1.11 `fwdc248b.bin` | `a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f` |
-| GF-2 Flash Mode `fwdc248b.bin` made by this tool (1.1.0) | `660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75` |
+| GF-2 Flash Mode `fwdc248b.bin` made by this tool (1.2.0, guide number 3) | `225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22` |
+| GF-2 Flash Mode `fwdc248b.bin`, version 1.1.0 | `660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75` |
 | GF-2 Flash Mode `fwdc248b.bin`, version 1.0.0 (GF-2 only) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |

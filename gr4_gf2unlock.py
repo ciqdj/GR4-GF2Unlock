@@ -3,13 +3,13 @@
 
 Adds "GF-2 Flash Mode" as a fifth Flash Mode option, the distance-based flash exposure
 mode RICOH gave the GR III in firmware 2.10. With it selected, the camera fires the flash
-at a fixed power and sets aperture, ISO and shutter speed from the focus distance, for the
-GF-2 or any other flash on the hot shoe, as on the GR III. Turns the official RICOH
-firmware file you downloaded yourself into the GF-2 Flash Mode version. A file is written
-only if every check passes.
+at a fixed power and sets aperture, ISO and shutter speed from the focus distance and the
+flash's guide number: the GF-2's (3) by default, or your own flash's with --gn. Turns the
+official RICOH firmware file you downloaded yourself into the GF-2 Flash Mode version. A
+file is written only if every check passes.
 
 Usage
-  python3 gr4_gf2unlock.py patch  OFFICIAL_fwdc248b.bin  [-o OUTPUT_DIR]
+  python3 gr4_gf2unlock.py patch  OFFICIAL_fwdc248b.bin  [--gn GN] [-o OUTPUT_DIR]
   python3 gr4_gf2unlock.py check  ANY_fwdc248b.bin
 
 Python 3.8 or newer, no extra packages.
@@ -17,20 +17,22 @@ Python 3.8 or newer, no extra packages.
 import argparse
 import base64
 import hashlib
+import math
 import struct
 import sys
 import zlib
 from pathlib import Path
 
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 OFFICIAL_SHA256 = 'a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f'
 OFFICIAL_BYTES = 38648776
 
-UNLOCKED_SHA256 = '660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75'
+UNLOCKED_SHA256 = '225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22'
 
 # Other known GR IV 1.11 builds that this tool should not be fed (identified by `check`).
 OTHER_KNOWN = {
+    '660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75': 'GR4-GF2Unlock 1.1.0 (GF-2 Flash Mode, guide number 3)',
     '45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c': 'GR4-GF2Unlock 1.0.0 (GF-2 Flash Mode, GF-2 only)',
     '4c04b48c65897f2edd028df0f5e04666ca241488c81502bae0f34e040ee454eb': 'GR4-MonoUnlock 1.0.0 (monochrome looks unlocked)',
     'fa2c67d1b67e16675a0c75b98d58c519b803f049a00e40e34103e54ca9a6a6c7': 'GR4-XPanUnlock 1.0.0 (16:9 replaced by XPan, letterboxed live view)',
@@ -38,36 +40,44 @@ OTHER_KNOWN = {
     'aa9ac5dbb05d0e362019b78c678ac322fe9b6786d980cafe1846bf191f739cb0': 'GR4-XPanUnlock 2.0.0 (XPan added next to 16:9)',
 }
 
+# The guide number GF-2 Flash Mode plans with: one word in the added code, 16*log2(GN) with GN
+# at ISO 100 in metres. The change data below sets the GR III's constant, 25 (GN 2.95); --gn
+# writes another value there and nothing else.
+GN_OFFSET = 0x1a568
+GN_DEFAULT = 25
+GN_CODES = range(0, 105)            # GN 1 .. 90, the range checked offline
+# Decoded contents of the reference firmware (default GN), to recognise other GN builds.
+REFERENCE_PAYLOAD_SHA256 = 'cfe81cdeaa129fe3cb43ff2bd721d9b1879eccad640ac28935c48a4a754c6081'
+
 # The GF-2 Flash Mode changes, applied to the official file.
-PATCH_SHA256 = '5851175bc7b3424155828856b6ff7506c724d2f94cff114b711c3c430748ccc2'
+PATCH_SHA256 = '71a04cf3d2fa214edc4132525cbfa626c1203b922fdd73e92d7735342266584a'
 PATCH_DATA = (
-    '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'
+    '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'
 )
 
 HEADER, MAGIC, FOOTER_MAGIC = 128, b'RICOH\0\0\0', b'\xa5\x5a\x5a\xa5'
@@ -229,7 +239,46 @@ def rebuild(source, frames, consumed, patched, changed):
     return bytes(out), reemitted
 
 
-def patch(source, log=print):
+def gn_code(gn):
+    """Guide number (ISO 100, m) -> the GN word: 16*log2(GN), in 1/16-stop steps."""
+    code = round(16 * math.log2(gn)) if 0 < gn < 1e6 else None
+    if code not in GN_CODES:
+        raise Refused(f'guide number {gn:g} is outside {gn_value(GN_CODES[0]):g} to {gn_value(GN_CODES[-1]):.1f}')
+    return code
+
+
+def gn_value(code):
+    return 2 ** (code / 16)
+
+
+def payload_gn(payload):
+    """The GN code of a GF-2 Flash Mode payload made by this version, else None."""
+    if len(payload) < GN_OFFSET + 8:
+        return None
+    code = struct.unpack_from('<i', payload, GN_OFFSET)[0]
+    buf = bytearray(payload)
+    struct.pack_into('<i', buf, GN_OFFSET, GN_DEFAULT)
+    return code if sha256(rezero(bytes(buf))) == REFERENCE_PAYLOAD_SHA256 else None
+
+
+def encode(source, frames, consumed, payload, base, patched, allowed):
+    """The container for `patched` (built from the official `source`, whose decoded contents
+    are `payload`), read back and checked: only `allowed` offsets and the checksum word may
+    differ from `base`."""
+    out, _ = rebuild(source, frames, consumed, patched, differences(payload, patched))
+    again, _, used = decode(out)
+    if again != patched:
+        raise Refused('verification failed: the new file does not read back correctly')
+    check_container(out, again, used)
+    allowed = allowed | set(range(len(base) - 4, len(base)))
+    if out[:HEADER] != source[:HEADER] or [i for i in differences(base, patched) if i not in allowed] or \
+            sections(again) != sections(base):
+        raise Refused('verification failed: unexpected changes')
+    return out
+
+
+def patch(source, gn=GN_DEFAULT, log=print):
+    """gn: the GN word (gn_code), GN_DEFAULT for the reference firmware."""
     digest = sha256(source)
     if digest != OFFICIAL_SHA256 or len(source) != OFFICIAL_BYTES:
         if digest == UNLOCKED_SHA256:
@@ -263,21 +312,21 @@ def patch(source, log=print):
     patched = rezero(bytes(buf))
 
     log('writing the new firmware ...')
-    changed = differences(payload, patched)
-    out, _ = rebuild(source, frames, consumed, patched, changed)
-
-    log('verifying result ...')
-    again, _, used = decode(out)
-    if again != patched:
-        raise Refused('verification failed: the new file does not read back correctly')
-    check_container(out, again, used)
-    allowed |= set(range(len(payload) - 4, len(payload)))
-    if out[:HEADER] != source[:HEADER] or [i for i in changed if i not in allowed] or \
-            sections(again) != secs:
-        raise Refused('verification failed: unexpected changes')
-    if sha256(out) != UNLOCKED_SHA256:
+    out = encode(source, frames, consumed, payload, payload, patched, allowed)
+    if sha256(out) != UNLOCKED_SHA256 or payload_gn(patched) != GN_DEFAULT:
         raise Refused('verification failed: the result differs from the reference firmware')
     log('verified: the result matches the reference firmware exactly')
+    if gn == GN_DEFAULT:
+        return out
+
+    log(f'setting the guide number to {gn_value(gn):.2f} ...')
+    buf = bytearray(patched)
+    struct.pack_into('<i', buf, GN_OFFSET, gn)
+    custom = rezero(bytes(buf))
+    out = encode(source, frames, consumed, payload, patched, custom, set(range(GN_OFFSET, GN_OFFSET + 4)))
+    if payload_gn(custom) != gn:
+        raise Refused('verification failed: the guide number was not set')
+    log('verified: the reference firmware with only the guide number changed')
     return out
 
 
@@ -297,17 +346,23 @@ def write_atomic(data, out_dir):
 
 def identify(data, log=print):
     digest = sha256(data)
-    names = {OFFICIAL_SHA256: 'official RICOH GR IV 1.11 (unmodified)',
-             UNLOCKED_SHA256: f'GR4-GF2Unlock {VERSION} (GF-2 Flash Mode added)', **OTHER_KNOWN}
+    names = {OFFICIAL_SHA256: 'official RICOH GR IV 1.11 (unmodified)', **OTHER_KNOWN}
     log(f'SHA-256  {digest}')
     log(f'bytes    {len(data)}')
-    log(f'file     {names.get(digest, "unknown - not produced by this tool and not the official 1.11 file")}')
     try:
-        check_container(data)
-        log('file: valid firmware file')
+        payload = check_container(data)
     except Refused as exc:
-        log(f'file: INVALID - {exc}')
+        payload, error = None, exc
+    code = payload_gn(payload) if payload is not None and digest not in names else None
+    if code is not None:
+        default = ', the default' if code == GN_DEFAULT else ''
+        names[digest] = (f'GR4-GF2Unlock {VERSION} (GF-2 Flash Mode added, '
+                         f'guide number {gn_value(code):.2f}{default})')
+    log(f'file     {names.get(digest, "unknown - not produced by this tool and not the official 1.11 file")}')
+    if payload is None:
+        log(f'file: INVALID - {error}')
         return 2
+    log('file: valid firmware file')
     return 0 if digest in names else 1
 
 
@@ -318,6 +373,9 @@ def main(argv=None):
     sub = ap.add_subparsers(dest='cmd', required=True)
     p = sub.add_parser('patch', help='make the GF-2 Flash Mode firmware from the official file')
     p.add_argument('input', type=Path, help='official RICOH fwdc248b.bin (GR IV 1.11)')
+    p.add_argument('--gn', type=float, default=None,
+                   help='guide number of your flash at ISO 100, in metres (default: 3, as on the GR III; '
+                        'range 1 to 90)')
     p.add_argument('-o', '--output-dir', type=Path, default=Path('output'),
                    help='directory for the result (default: ./output); the file is named fwdc248b.bin')
     c = sub.add_parser('check', help='identify a fwdc248b.bin and validate its container')
@@ -334,8 +392,10 @@ def main(argv=None):
         if (a.output_dir / 'fwdc248b.bin').exists():
             raise Refused(f'{a.output_dir / "fwdc248b.bin"} already exists; '
                           'choose another output directory or remove it')
+        code = GN_DEFAULT if a.gn is None else gn_code(a.gn)
         print(f'GR4-GF2Unlock {VERSION}')
-        out = patch(data)
+        print(f'guide number: {gn_value(code):.2f} (ISO 100, m)' + (' - the default' if a.gn is None else ''))
+        out = patch(data, code)
         target = write_atomic(out, a.output_dir)
         print(f'wrote {target}  (SHA-256 {sha256(out)})')
         print('Copy this file to the root of the SD card and run the camera\'s firmware update.')
