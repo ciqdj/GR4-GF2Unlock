@@ -69,8 +69,10 @@ propres au GR IV. Le nombre guide est celui du GF-2, 3, sauf si vous indiquez
 celui de votre propre flash en créant le firmware (voir
 [Votre propre flash](#votre-propre-flash)).
 
-- **La puissance** est fixée par **Intensité du flash** : **Auto ou 1/1**
-  correspond à la pleine puissance, **1/4** au quart de puissance.
+- **La puissance :** l'appareil règle le GF-2 avec **Intensité du flash** :
+  **Auto ou 1/1** correspond à la pleine puissance, **1/4** au quart de
+  puissance. Un autre flash se déclenche à la puissance réglée sur le flash
+  lui-même (voir [Votre propre flash](#votre-propre-flash)).
 - **En ISO Auto,** l'appareil ouvre l'ouverture et augmente la sensibilité ISO à
   mesure que le sujet s'éloigne. De près, il reste à l'ISO le plus bas et ferme
   l'ouverture autant que la distance l'exige, jusqu'à f/16.
@@ -127,10 +129,14 @@ touche Fn) propose :
   « Mode flash GF-2 » en français. Lorsque la synchro lente n'est pas
   disponible, les choix sont Flash forcé, Flash forcé+yeux rouges et Mode flash
   GF-2.
-- Il fonctionne en **P, Tv, Av ou M** avec **n'importe quel flash** sur la
-  griffe flash, comme sur le GR III. L'exposition est calculée pour le nombre
-  guide inscrit dans le firmware : celui du GF-2, ou celui de votre propre flash
-  (voir [Votre propre flash](#votre-propre-flash)).
+- Il fonctionne en **P, Tv, Av ou M** avec le GF-2 et avec **tout flash qui ne
+  communique pas avec l'appareil**, par exemple un flash manuel, comme sur le
+  GR III. L'exposition est calculée pour le nombre guide inscrit dans le
+  firmware : celui du GF-2, ou celui de votre propre flash (voir
+  [Votre propre flash](#votre-propre-flash)).
+- Avec un **flash P-TTL** qui communique avec l'appareil, tel qu'un flash RICOH
+  ou PENTAX, le Mode flash GF-2 fonctionne comme Flash forcé, là aussi comme sur
+  le GR III.
 - Le réglage est conservé lorsque l'appareil est éteint, comme tout réglage du
   Mode flash.
 - L'écran de prise de vue affiche l'icône **Flash forcé**, et les photos
@@ -145,7 +151,7 @@ le GR III n'a pas, et corrige quelques points faibles :
 
 | | GR III 2.10 | GR4-GF2Unlock |
 | --- | --- | --- |
-| Puissance du flash | Pleine puissance uniquement : le GR III ne peut pas piloter le GF-2 | Pleine puissance ou quart de puissance (Intensité du flash 1/1 ou 1/4), avec l'exposition calculée pour chacune |
+| Puissance du flash | Pleine puissance uniquement : le GR III ne peut pas piloter le GF-2 | Avec le GF-2, pleine puissance ou quart de puissance (Intensité du flash 1/1 ou 1/4), avec l'exposition calculée pour chacune |
 | Nombre guide | Toujours 3, celui du GF-2 | 3, ou celui de votre propre flash (1 à 90) |
 | Sujets proches avec ISO Auto | Jusqu'à environ 1 IL trop clair en dessous de 0,7 m | L'ouverture qu'exige la distance, jusqu'à f/16 |
 | ISO Auto avec le filtre ND activé | L'arrière-plan est sous-exposé de deux IL | La vitesse d'obturation tient compte du filtre ND, l'arrière-plan est donc correctement exposé |
@@ -153,9 +159,9 @@ le GR III n'a pas, et corrige quelques points faibles :
 | Synchro flash | Peut demander une vitesse d'obturation plus rapide que la synchro flash | Toujours dans la plage de synchro flash, qui dépend de l'ouverture sur le GR IV |
 | Tout le reste | Activer le mode remplace le comportement normal du flash | Une option du Mode flash parmi cinq : revenez à Flash forcé et à l'intensité du flash automatique du GR IV quand vous voulez |
 
-Plus de 200 000 combinaisons de distance, de sensibilité ISO, de filtre ND, de
-mode de flash, de lumière et de nombre guide (1 à 90) ont été vérifiées. Aucune
-ne demande une ouverture en dehors de f/2.8–f/16, une sensibilité ISO en dehors
+Plus de 250 000 combinaisons de distance, de sensibilité ISO, de filtre ND, de
+mode de flash, de lumière, de type de flash et de nombre guide (1 à 90) ont été
+vérifiées. Aucune ne demande une ouverture en dehors de f/2.8–f/16, une sensibilité ISO en dehors
 de vos limites ni une vitesse d'obturation avec laquelle le flash ne peut pas se
 synchroniser.
 
@@ -163,7 +169,7 @@ synchroniser.
 
 - **Appareil :** RICOH GR IV (le modèle couleur standard). Les autres modèles ne
   sont pas pris en charge.
-- **Flash :** RICOH GF-2, ou tout flash dont vous connaissez le nombre guide
+- **Flash :** RICOH GF-2, ou un flash manuel dont vous connaissez le nombre guide
   (voir [Votre propre flash](#votre-propre-flash)). Les autres options du Mode
   flash fonctionnent avec tous les flashs comme avant.
 - **Votre appareil doit déjà être en firmware 1.11.** Vérifiez la version dans
@@ -201,7 +207,7 @@ L'outil vérifie d'abord que vous lui avez donné le véritable fichier officiel
 environ une minute. Si tout est correct, il se termine ainsi :
 
 ```
-wrote output/fwdc248b.bin  (SHA-256 225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22)
+wrote output/fwdc248b.bin  (SHA-256 86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a)
 ```
 
 En cas de problème, il affiche `refused: …` et n'écrit **rien** : par exemple
@@ -217,6 +223,11 @@ utiliser un autre flash, ajoutez son nombre guide avec `--gn` :
 python3 gr4_gf2unlock.py patch ~/Downloads/fwdc248b.bin --gn 12
 ```
 
+- **Quels flashs :** tout flash qui ne communique pas avec l'appareil et se
+  déclenche par le contact central de la griffe flash : les flashs manuels, et
+  la plupart des flashs conçus pour d'autres marques d'appareils. Un flash
+  P-TTL, ou un flash compatible en mode P-TTL, communique avec l'appareil ; le
+  Mode flash GF-2 fonctionne alors comme Flash forcé, comme sur le GR III.
 - Indiquez le nombre guide **à ISO 100, en mètres**, à pleine puissance, tel que
   donné dans le manuel du flash. Un nombre guide en pieds : divisez-le par 3,3.
   Un flash à zoom : prenez le nombre guide correspondant à la focale de zoom
@@ -224,9 +235,10 @@ python3 gr4_gf2unlock.py patch ~/Downloads/fwdc248b.bin --gn 12
 - Valeurs permises : **1 à 90**. L'appareil travaille par pas de 1/16 d'IL, et
   l'outil affiche la valeur qu'il utilise, par exemple `guide number: 11.81`
   pour 12.
-- Si le flash a son propre réglage de puissance, réglez-le sur la **pleine
-  puissance manuelle**. Intensité du flash 1/4 signifie toujours deux IL de
-  moins que le nombre guide.
+- **L'appareil ne peut pas régler la puissance d'un tel flash.** Réglez le
+  flash sur la **pleine puissance manuelle** et Intensité du flash sur **Auto**
+  ou **1/1**. Si vous réglez plutôt le flash sur 1/4 de puissance, réglez aussi
+  Intensité du flash sur **1/4** : l'appareil prévoit alors deux IL de moins.
 - L'outil crée d'abord le firmware standard et le vérifie comme ci-dessus, puis
   ne modifie que le nombre guide. Le SHA-256 est alors différent de celui
   ci-dessus ; `check` affiche le nombre guide d'un fichier.
@@ -283,9 +295,10 @@ appareil retrouve son état d'origine.
 
 - **Éteignez l'appareil et le GF-2 avant de fixer ou de retirer le flash**, et
   enfoncez le GF-2 à fond dans la griffe flash.
-- **L'appareil ne peut pas savoir si le GF-2 est allumé.** S'il ne se déclenche
-  pas, l'appareil règle quand même l'exposition pour une photo au flash, qui
-  sera alors trop sombre. C'est aussi le cas sur le GR III.
+- **L'appareil ne peut pas savoir si le flash va se déclencher.** Avec le Mode
+  flash GF-2 sélectionné, il règle l'exposition pour une photo au flash même
+  lorsque le flash est éteint, non fixé ou encore en recharge. Cette photo sera
+  alors trop sombre. C'est aussi le cas sur le GR III.
 - **Un flash puissant de près :** lorsque le sujet est si proche que même f/16
   à l'ISO le plus bas laisse entrer trop de lumière du flash, la photo est plus
   claire que prévu. En ISO Auto avec Filtre ND réglé sur Auto, l'appareil
@@ -306,6 +319,9 @@ appareil retrouve son état d'origine.
   firmware officiel, et cet outil refuse leurs fichiers.
 - **Mise à jour depuis un GR4-GF2Unlock antérieur :** installez le nouveau
   fichier de la même façon. Inutile de revenir d'abord au firmware officiel.
+  Les versions 1.1.0 et 1.2.0 n'appliquaient le Mode flash GF-2 qu'aux flashs
+  détectés par l'appareil, si bien qu'il restait sans effet avec un flash
+  manuel ; la 1.3.0 corrige ce point.
 - **Une mise à jour officielle de RICOH supprime le Mode flash GF-2.** Elle
   remplace l'intégralité du firmware. Réglez d'abord une autre option du Mode
   flash (voir [Revenir au firmware officiel](#revenir-au-firmware-officiel)).
@@ -323,7 +339,7 @@ python3 gr4_gf2unlock.py check path/to/fwdc248b.bin
 
 Cette commande vous indique si le fichier est le 1.11 officiel, la version avec
 Mode flash GF-2 créée par cet outil (avec son nombre guide) ou autre chose
-(elle reconnaît aussi les fichiers GR4-GF2Unlock 1.0.0 et 1.1.0,
+(elle reconnaît aussi les fichiers GR4-GF2Unlock 1.0.0, 1.1.0 et 1.2.0,
 GR4-MonoUnlock et GR4-XPanUnlock).
 
 ## Risques
@@ -346,7 +362,8 @@ GR4-MonoUnlock et GR4-XPanUnlock).
 | Mise à jour acceptée, l'appareil démarre | testé sur un GR IV 1.11 |
 | Mode flash GF-2 dans le menu Mode flash | testé sur un GR IV 1.11 |
 | Exposition déterminée par la distance de mise au point avec le GF-2 | testé sur un GR IV 1.11 |
-| Mode flash GF-2 avec d'autres flashs | vérifié hors ligne ; merci de signaler vos résultats |
+| Mode flash GF-2 avec un flash manuel (1.3.0) | vérifié hors ligne ; merci de signaler vos résultats |
+| Les flashs P-TTL fonctionnent comme Flash forcé (1.3.0) | vérifié hors ligne ; merci de signaler vos résultats |
 | Votre propre nombre guide (`--gn`) | vérifié hors ligne ; merci de signaler vos résultats |
 | Sujets proches avec ISO Auto (ouverture exacte) | vérifié hors ligne ; merci de signaler vos résultats |
 | Cycles du levier ADJ et de la touche Fn | vérifié hors ligne ; merci de signaler vos résultats |
@@ -355,9 +372,10 @@ GR4-MonoUnlock et GR4-XPanUnlock).
 | Revenir au 1.11 officiel restaure entièrement l'appareil | testé avec un firmware modifié antérieur sur un GR IV 1.11 ; pas encore avec cette version |
 | L'outil reproduit exactement le firmware de référence | testé |
 
-Les tests sur l'appareil ont été faits avec la version 1.0.0. Depuis, le Mode
-flash GF-2 s'applique à n'importe quel flash (1.1.0), le nombre guide peut être
-réglé et les sujets proches en ISO Auto reçoivent l'ouverture exacte (1.2.0).
+Les tests sur l'appareil ont été faits avec la version 1.0.0. Depuis, le nombre
+guide peut être réglé et les sujets proches en ISO Auto reçoivent l'ouverture
+exacte (1.2.0), et le Mode flash GF-2 s'applique aux flashs que l'appareil ne
+détecte pas, comme sur le GR III (1.3.0).
 
 ## Pour les développeurs
 
@@ -372,6 +390,7 @@ GR4-GF2Unlock/
 | Fichier | SHA-256 |
 | --- | --- |
 | `fwdc248b.bin` officiel RICOH GR IV 1.11 | `a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f` |
-| `fwdc248b.bin` avec Mode flash GF-2 créé par cet outil (1.2.0, nombre guide 3) | `225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22` |
+| `fwdc248b.bin` avec Mode flash GF-2 créé par cet outil (1.3.0, nombre guide 3) | `86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a` |
+| `fwdc248b.bin` avec Mode flash GF-2, version 1.2.0 | `225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22` |
 | `fwdc248b.bin` avec Mode flash GF-2, version 1.1.0 | `660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75` |
 | `fwdc248b.bin` avec Mode flash GF-2, version 1.0.0 (GF-2 uniquement) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |

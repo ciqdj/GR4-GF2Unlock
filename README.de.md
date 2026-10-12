@@ -69,8 +69,10 @@ Grenzen der GR IV für Blende, ISO und Blitzsynchronisation. Die Leitzahl ist di
 des GF-2, 3, es sei denn, Sie geben beim Erstellen der Firmware die Ihres
 eigenen Blitzes an (siehe [Eigenes Blitzgerät](#eigenes-blitzgerät)).
 
-- **Die Leistung** wird über die **Blitzleistung** eingestellt: **Auto oder 1/1**
-  ist volle Leistung, **1/4** ist Viertelleistung.
+- **Die Leistung:** Beim GF-2 stellt die Kamera sie über die **Blitzleistung**
+  ein: **Auto oder 1/1** ist volle Leistung, **1/4** ist Viertelleistung. Ein
+  anderer Blitz löst mit der Leistung aus, die am Blitz selbst eingestellt ist
+  (siehe [Eigenes Blitzgerät](#eigenes-blitzgerät)).
 - **Mit ISO-Automatik** öffnet die Kamera die Blende und erhöht die ISO, je
   weiter das Motiv entfernt ist. Aus der Nähe bleibt sie bei der niedrigsten ISO
   und schließt die Blende so weit, wie es die Entfernung verlangt, bis f/16.
@@ -127,10 +129,14 @@ die Fn-Taste) Folgendes an:
 - Der neue Eintrag hat in jeder Menüsprache einen eigenen Namen, auf Deutsch zum
   Beispiel „GF-2-Blitzmodus“. Wenn keine Langzeitsynchronisation verfügbar ist,
   stehen Blitz Ein, Blitz Ein+Anti Rote Augen und GF-2-Blitzmodus zur Auswahl.
-- Er funktioniert in **P, Tv, Av oder M** mit **jedem Blitz** auf dem
-  Blitzschuh, wie bei der GR III. Die Belichtung wird für die Leitzahl in der
-  Firmware berechnet: die des GF-2 oder die Ihres eigenen Blitzes (siehe
+- Er funktioniert in **P, Tv, Av oder M** mit dem GF-2 und mit **jedem Blitz,
+  der nicht mit der Kamera kommuniziert**, etwa einem manuellen Blitz, wie bei
+  der GR III. Die Belichtung wird für die Leitzahl in der Firmware berechnet: die
+  des GF-2 oder die Ihres eigenen Blitzes (siehe
   [Eigenes Blitzgerät](#eigenes-blitzgerät)).
+- Mit einem **P-TTL-Blitz**, der mit der Kamera kommuniziert, etwa einem Blitz
+  von RICOH oder PENTAX, funktioniert der GF-2-Blitzmodus wie Blitz Ein,
+  ebenfalls wie bei der GR III.
 - Die Einstellung bleibt beim Ausschalten der Kamera erhalten, wie jede
   Einstellung des Blitzmodus.
 - Der Aufnahmebildschirm zeigt das Symbol für **Blitz Ein**, und die Bilder
@@ -145,7 +151,7 @@ Hardware, die die GR III nicht hat, und behebt einige Schwachstellen:
 
 | | GR III 2.10 | GR4-GF2Unlock |
 | --- | --- | --- |
-| Blitzleistung | Nur volle Leistung: Die GR III kann den GF-2 nicht steuern | Volle oder Viertelleistung (Blitzleistung 1/1 oder 1/4), mit jeweils eigens berechneter Belichtung |
+| Blitzleistung | Nur volle Leistung: Die GR III kann den GF-2 nicht steuern | Mit dem GF-2 volle oder Viertelleistung (Blitzleistung 1/1 oder 1/4), mit jeweils eigens berechneter Belichtung |
 | Leitzahl | Immer 3, die des GF-2 | 3 oder die Ihres eigenen Blitzes (1 bis 90) |
 | Nahe Motive mit ISO-Automatik | Bis zu etwa 1 EV zu hell, näher als 0,7 m | Die Blende, die die Entfernung verlangt, bis f/16 |
 | ISO-Automatik mit eingeschaltetem Neutralfilter | Der Hintergrund wird zwei Stufen zu dunkel | Die Verschlusszeit berücksichtigt den Neutralfilter, sodass der Hintergrund richtig belichtet wird |
@@ -153,17 +159,17 @@ Hardware, die die GR III nicht hat, und behebt einige Schwachstellen:
 | Blitzsynchronisation | Kann eine kürzere Verschlusszeit als die Blitzsynchronzeit verlangen | Immer innerhalb der Blitzsynchronzeit, die bei der GR IV von der Blende abhängt |
 | Alles andere | Das Einschalten des Modus ersetzt das normale Blitzverhalten | Eine von fünf Auswahlmöglichkeiten im Blitzmodus: Wechseln Sie jederzeit zurück zu Blitz Ein und zur automatischen Blitzleistung der GR IV |
 
-Mehr als 200.000 Kombinationen aus Entfernung, ISO, Neutralfilter, Blitzmodus,
-Licht und Leitzahl (1 bis 90) wurden geprüft. Keine davon verlangt eine Blende
-außerhalb von f/2.8–f/16, eine ISO außerhalb Ihrer Grenzen oder eine
+Mehr als 250.000 Kombinationen aus Entfernung, ISO, Neutralfilter, Blitzmodus,
+Licht, Blitztyp und Leitzahl (1 bis 90) wurden geprüft. Keine davon verlangt
+eine Blende außerhalb von f/2.8–f/16, eine ISO außerhalb Ihrer Grenzen oder eine
 Verschlusszeit, mit der der Blitz nicht synchronisieren kann.
 
 ## Bevor Sie beginnen
 
 - **Kamera:** RICOH GR IV (das normale Farbmodell). Andere Modelle werden nicht
   unterstützt.
-- **Blitz:** RICOH GF-2 oder jeder Blitz, dessen Leitzahl Sie kennen (siehe
-  [Eigenes Blitzgerät](#eigenes-blitzgerät)). Die anderen Blitzmodi
+- **Blitz:** RICOH GF-2 oder ein manueller Blitz, dessen Leitzahl Sie kennen
+  (siehe [Eigenes Blitzgerät](#eigenes-blitzgerät)). Die anderen Blitzmodi
   funktionieren mit jedem Blitz wie bisher.
 - **Ihre Kamera muss bereits Firmware 1.11 haben.** Prüfen Sie die Version im
   Setup-Menü der Kamera.
@@ -202,7 +208,7 @@ gegeben haben. Dann erstellt es die Firmware mit GF-2-Blitzmodus und prüft sie.
 Das dauert etwa eine Minute. Wenn alles stimmt, endet es mit:
 
 ```
-wrote output/fwdc248b.bin  (SHA-256 225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22)
+wrote output/fwdc248b.bin  (SHA-256 86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a)
 ```
 
 Wenn etwas nicht stimmt, gibt es `refused: …` aus und schreibt **nichts**: zum
@@ -218,6 +224,11 @@ anderen Blitz zu verwenden, fügen Sie seine Leitzahl mit `--gn` hinzu:
 python3 gr4_gf2unlock.py patch ~/Downloads/fwdc248b.bin --gn 12
 ```
 
+- **Welche Blitzgeräte:** jeder Blitz, der nicht mit der Kamera kommuniziert
+  und über den Mittenkontakt des Blitzschuhs auslöst: manuelle Blitzgeräte und
+  die meisten Blitzgeräte für andere Kameramarken. Ein P-TTL-Blitz oder ein
+  kompatibler Blitz im P-TTL-Modus kommuniziert mit der Kamera; der
+  GF-2-Blitzmodus funktioniert dann wie Blitz Ein, wie bei der GR III.
 - Geben Sie die Leitzahl **bei ISO 100, in Metern**, bei voller Leistung an, aus
   der Anleitung des Blitzes. Eine Leitzahl in Fuß: durch 3,3 teilen. Ein
   Zoom-Blitz: Verwenden Sie die Leitzahl für die Zoomstellung, mit der Sie
@@ -225,9 +236,11 @@ python3 gr4_gf2unlock.py patch ~/Downloads/fwdc248b.bin --gn 12
 - Erlaubt: **1 bis 90**. Die Kamera rechnet in Schritten von 1/16 Blendenstufe,
   und das Werkzeug zeigt den Wert, den es verwendet, zum Beispiel
   `guide number: 11.81` für 12.
-- Hat der Blitz eine eigene Leistungseinstellung, stellen Sie ihn auf
-  **volle manuelle Leistung**. Blitzleistung 1/4 bedeutet weiterhin zwei Stufen
-  weniger als die Leitzahl.
+- **Die Kamera kann die Leistung eines solchen Blitzes nicht einstellen.**
+  Stellen Sie den Blitz auf **volle manuelle Leistung** und die Blitzleistung
+  auf **Auto** oder **1/1**. Stellen Sie den Blitz stattdessen auf 1/4 Leistung,
+  stellen Sie auch die Blitzleistung auf **1/4**: Die Kamera plant dann zwei
+  Stufen weniger ein.
 - Das Werkzeug erstellt zuerst die Standard-Firmware und prüft sie wie oben,
   dann ändert es nur die Leitzahl. Die SHA-256 unterscheidet sich dann von der
   oben genannten; `check` zeigt die Leitzahl einer Datei.
@@ -285,9 +298,10 @@ Sie, und Ihre Kamera ist wieder im Originalzustand.
 
 - **Schalten Sie Kamera und GF-2 aus, bevor Sie den Blitz aufstecken oder
   abnehmen**, und schieben Sie den GF-2 vollständig in den Blitzschuh.
-- **Die Kamera kann nicht erkennen, ob der GF-2 eingeschaltet ist.** Löst er
-  nicht aus, stellt die Kamera trotzdem die Belichtung für ein Blitzfoto ein, und
-  das Bild wird zu dunkel. Das ist bei der GR III genauso.
+- **Die Kamera kann nicht erkennen, ob der Blitz auslösen wird.** Ist der
+  GF-2-Blitzmodus gewählt, stellt sie die Belichtung für ein Blitzfoto ein, auch
+  wenn der Blitz ausgeschaltet, nicht aufgesteckt oder noch nicht wieder geladen
+  ist. Dieses Bild wird zu dunkel. Das ist bei der GR III genauso.
 - **Ein leistungsstarker Blitz aus der Nähe:** Ist das Motiv so nah, dass selbst
   f/16 bei der niedrigsten ISO zu viel Blitzlicht durchlässt, wird das Bild
   heller als geplant. Mit ISO-Automatik und Neutralfilter auf Auto schaltet die
@@ -310,7 +324,9 @@ Sie, und Ihre Kamera ist wieder im Originalzustand.
   ab.
 - **Update von einem früheren GR4-GF2Unlock:** Installieren Sie die neue Datei
   auf die gleiche Weise. Sie müssen nicht zuerst zur offiziellen Firmware
-  zurückkehren.
+  zurückkehren. Die Versionen 1.1.0 und 1.2.0 wendeten den GF-2-Blitzmodus nur
+  auf Blitzgeräte an, die die Kamera erkennt, sodass er mit einem manuellen
+  Blitz keine Wirkung hatte; 1.3.0 behebt das.
 - **Ein offizielles Update von RICOH entfernt den GF-2-Blitzmodus.** Es ersetzt
   die gesamte Firmware. Stellen Sie zuerst einen anderen Blitzmodus ein (siehe
   [Zurück zur offiziellen Firmware](#zurück-zur-offiziellen-firmware)).
@@ -329,8 +345,8 @@ python3 gr4_gf2unlock.py check path/to/fwdc248b.bin
 
 Es sagt Ihnen, ob die Datei die offizielle 1.11, die mit diesem Werkzeug
 erstellte Version mit GF-2-Blitzmodus (mit ihrer Leitzahl) oder etwas anderes
-ist (es erkennt auch Dateien von GR4-GF2Unlock 1.0.0 und 1.1.0, GR4-MonoUnlock
-und GR4-XPanUnlock).
+ist (es erkennt auch Dateien von GR4-GF2Unlock 1.0.0, 1.1.0 und 1.2.0,
+GR4-MonoUnlock und GR4-XPanUnlock).
 
 ## Risiken
 
@@ -353,7 +369,8 @@ und GR4-XPanUnlock).
 | Update akzeptiert, Kamera startet | getestet auf einer GR IV 1.11 |
 | GF-2-Blitzmodus im Menü Blitzmodus | getestet auf einer GR IV 1.11 |
 | Belichtung aus der Fokusentfernung mit dem GF-2 | getestet auf einer GR IV 1.11 |
-| GF-2-Blitzmodus mit anderen Blitzgeräten | offline geprüft; bitte melden Sie Ihre Ergebnisse |
+| GF-2-Blitzmodus mit einem manuellen Blitz (1.3.0) | offline geprüft; bitte melden Sie Ihre Ergebnisse |
+| P-TTL-Blitzgeräte funktionieren wie Blitz Ein (1.3.0) | offline geprüft; bitte melden Sie Ihre Ergebnisse |
 | Eigene Leitzahl (`--gn`) | offline geprüft; bitte melden Sie Ihre Ergebnisse |
 | Nahe Motive mit ISO-Automatik (exakte Blende) | offline geprüft; bitte melden Sie Ihre Ergebnisse |
 | Durchschalten mit ADJ-Hebel und Fn-Taste | offline geprüft; bitte melden Sie Ihre Ergebnisse |
@@ -362,9 +379,10 @@ und GR4-XPanUnlock).
 | Die Rückkehr zur offiziellen 1.11 stellt die Kamera vollständig wieder her | getestet mit früherer veränderter Firmware auf einer GR IV 1.11; mit dieser Version noch nicht |
 | Das Werkzeug reproduziert die Referenz-Firmware exakt | getestet |
 
-Die Kameratests wurden mit Version 1.0.0 durchgeführt. Seitdem gilt der
-GF-2-Blitzmodus für jeden Blitz (1.1.0), die Leitzahl lässt sich einstellen, und
-nahe Motive mit ISO-Automatik erhalten die exakte Blende (1.2.0).
+Die Kameratests wurden mit Version 1.0.0 durchgeführt. Seitdem lässt sich die
+Leitzahl einstellen, und nahe Motive mit ISO-Automatik erhalten die exakte
+Blende (1.2.0); außerdem gilt der GF-2-Blitzmodus, wie bei der GR III, für
+Blitzgeräte, die die Kamera nicht erkennt (1.3.0).
 
 ## Für Entwickler
 
@@ -379,6 +397,7 @@ GR4-GF2Unlock/
 | Datei | SHA-256 |
 | --- | --- |
 | offizielle `fwdc248b.bin` 1.11 der RICOH GR IV | `a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f` |
-| `fwdc248b.bin` mit GF-2-Blitzmodus, erstellt mit diesem Werkzeug (1.2.0, Leitzahl 3) | `225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22` |
+| `fwdc248b.bin` mit GF-2-Blitzmodus, erstellt mit diesem Werkzeug (1.3.0, Leitzahl 3) | `86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a` |
+| `fwdc248b.bin` mit GF-2-Blitzmodus, Version 1.2.0 | `225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22` |
 | `fwdc248b.bin` mit GF-2-Blitzmodus, Version 1.1.0 | `660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75` |
 | `fwdc248b.bin` mit GF-2-Blitzmodus, Version 1.0.0 (nur GF-2) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |
