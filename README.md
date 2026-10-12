@@ -59,7 +59,7 @@ version, on your own computer.
 
 ## How it works
 
-With GF-2 Flash Mode selected, the camera fires the GF-2 like Flash On, but at
+With GF-2 Flash Mode selected, the camera fires the flash like Flash On, but at
 a **fixed power**. It then plans the exposure the way the GR III's GF-2 Flash
 Mode does: from the flash's guide number and the **focus distance** (autofocus
 or manual focus), within the GR IV's own aperture, ISO and flash-sync limits.
@@ -115,8 +115,9 @@ button) offers:
 - The new entry has its own name in every menu language, such as "GF-2 Flash
   Mode" in English. When slow sync is not available, the choices are Flash On,
   Flash On+Red-eye and GF-2 Flash Mode.
-- It works with the **GF-2 attached and switched on**, in **P, Tv, Av or M**.
-  With no GF-2 recognised on the hot shoe, it works like Flash On.
+- It works in **P, Tv, Av or M** with **any flash** on the hot shoe, as on the
+  GR III. The exposure is worked out for the GF-2's output: with a more
+  powerful flash, pictures come out brighter.
 - The setting is kept when the camera is off, like any Flash Mode setting.
 - The shooting screen shows the **Flash On** icon, and pictures record the flash
   as fired, like Flash On.
@@ -131,7 +132,6 @@ not have, and fixes a few weak spots:
 | | GR III 2.10 | GR4-GF2Unlock |
 | --- | --- | --- |
 | Flash power | Full power only: the GR III cannot control the GF-2 | Full or quarter power (Flash Output 1/1 or 1/4), with the exposure worked out for each |
-| Which flash | Assumes a GF-2 is firing whenever the mode is on | Applies only when the camera recognises a GF-2 on the hot shoe; otherwise works like Flash On |
 | ISO Auto with the ND filter on | The background comes out two stops too dark | The shutter speed allows for the ND filter, so the background is exposed correctly |
 | Very close subjects in bright light | Can ask for f/19, beyond the lens's f/16 | Stays within f/2.8–f/16 |
 | Flash sync | Can ask for a shutter speed faster than flash sync | Always within flash sync, which on the GR IV depends on the aperture |
@@ -145,8 +145,9 @@ speed the flash cannot sync with.
 
 - **Camera:** RICOH GR IV (the standard colour model). Other models are not
   supported.
-- **Flash:** RICOH GF-2. The mode is designed for its fixed output. Other
-  flashes keep working as before in the other Flash Modes.
+- **Flash:** RICOH GF-2. The mode is designed for its fixed output. With
+  another flash, GF-2 Flash Mode still applies, but the exposure assumes the
+  GF-2's output. The other Flash Modes work with every flash as before.
 - **Your camera must already be on firmware 1.11.** Check the version in the
   camera's setup menu.
   - Older version: first update to 1.11 the normal way, with RICOH's official file.
@@ -180,7 +181,7 @@ creates the GF-2 Flash Mode firmware and checks it. This takes about a minute.
 When everything is right, it ends with:
 
 ```
-wrote output/fwdc248b.bin  (SHA-256 45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c)
+wrote output/fwdc248b.bin  (SHA-256 660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75)
 ```
 
 If something is wrong, it prints `refused: …` and writes **nothing**: for
@@ -252,6 +253,8 @@ stock.
   does not apply there.
 - **Not combinable with GR4-MonoUnlock or GR4-XPanUnlock.** Each tool starts
   from the official firmware, and this tool refuses their files.
+- **Updating from GR4-GF2Unlock 1.0.0:** install the new file the same way. There
+  is no need to go back to the official firmware first.
 - **An official RICOH update removes GF-2 Flash Mode.** It replaces the whole
   firmware. Set another Flash Mode first (see
   [Going back](#going-back-to-the-official-firmware)).
@@ -267,8 +270,8 @@ python3 gr4_gf2unlock.py check path/to/fwdc248b.bin
 ```
 
 It tells you whether the file is the official 1.11, the GF-2 Flash Mode version
-made by this tool, or something else (it also recognises GR4-MonoUnlock and
-GR4-XPanUnlock files).
+made by this tool, or something else (it also recognises GR4-GF2Unlock 1.0.0,
+GR4-MonoUnlock and GR4-XPanUnlock files).
 
 ## Risks
 
@@ -288,11 +291,15 @@ GR4-XPanUnlock files).
 | Update accepted, camera starts | tested on a GR IV 1.11 |
 | GF-2 Flash Mode in the Flash Mode menu | tested on a GR IV 1.11 |
 | Exposure from the focus distance with the GF-2 | tested on a GR IV 1.11 |
+| GF-2 Flash Mode with other flashes | checked offline; please report your results |
 | ADJ lever and Fn button cycles | checked offline; please report your results |
 | Flash Output 1/4, fixed ISO, ND filter, slow sync | checked offline; please report your results |
 | Other Flash Modes unchanged | checked offline; please report your results |
 | Going back to the official 1.11 restores the camera completely | tested with earlier modified firmware on a GR IV 1.11; not yet with this version |
-| The tool reproduces the tested firmware exactly | tested |
+| The tool reproduces the reference firmware exactly | tested |
+
+The camera tests were done with version 1.0.0. Version 1.1.0 differs from it
+only in the four instructions that limited GF-2 Flash Mode to the GF-2.
 
 ## For developers
 
@@ -307,4 +314,5 @@ GR4-GF2Unlock/
 | File | SHA-256 |
 | --- | --- |
 | official RICOH GR IV 1.11 `fwdc248b.bin` | `a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f` |
-| GF-2 Flash Mode `fwdc248b.bin` made by this tool (1.0.0) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |
+| GF-2 Flash Mode `fwdc248b.bin` made by this tool (1.1.0) | `660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75` |
+| GF-2 Flash Mode `fwdc248b.bin`, version 1.0.0 (GF-2 only) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |

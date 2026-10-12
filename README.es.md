@@ -59,7 +59,7 @@ GF-2 Flash Mode, en tu propio ordenador.
 
 ## Cómo funciona
 
-Con GF-2 Flash Mode seleccionado, la cámara dispara el GF-2 como en Flash On,
+Con GF-2 Flash Mode seleccionado, la cámara dispara el flash como en Flash On,
 pero a una **potencia fija**. Después planifica la exposición como lo hace el
 GF-2 Flash Mode de la GR III: a partir del número guía del flash y de la
 **distancia de enfoque** (con enfoque automático o manual), dentro de los
@@ -120,8 +120,9 @@ botón Fn) ofrece:
   como en inglés, se muestra "GF-2 Flash Mode". Cuando la sincronización lenta
   no está disponible, las opciones son Flash On, Flash On+ojos rojos y GF-2
   Flash Mode.
-- Funciona con el **GF-2 montado y encendido**, en **P, Tv, Av o M**. Si no se
-  reconoce ningún GF-2 en la zapata, funciona como Flash On.
+- Funciona en **P, Tv, Av o M** con **cualquier flash** en la zapata, como en la
+  GR III. La exposición se calcula para la potencia del GF-2: con un flash más
+  potente, las fotos salen más claras.
 - El ajuste se conserva al apagar la cámara, como cualquier ajuste de Modo
   flash.
 - La pantalla de disparo muestra el icono de **Flash On**, y las fotos registran
@@ -137,7 +138,6 @@ aprovecha hardware que la GR III no tiene y corrige algunos puntos débiles:
 | | GR III 2.10 | GR4-GF2Unlock |
 | --- | --- | --- |
 | Potencia del flash | Solo potencia completa: la GR III no puede controlar el GF-2 | Potencia completa o un cuarto de potencia (Salida del flash 1/1 o 1/4), con la exposición calculada para cada una |
-| Qué flash | Da por hecho que hay un GF-2 disparando siempre que el modo está activado | Solo se aplica cuando la cámara reconoce un GF-2 en la zapata; si no, funciona como Flash On |
 | ISO Auto con el filtro ND activado | El fondo sale dos pasos demasiado oscuro | La velocidad de obturación tiene en cuenta el filtro ND, así que el fondo queda bien expuesto |
 | Sujetos muy cercanos con mucha luz | Puede pedir f/19, más allá del f/16 del objetivo | Se mantiene dentro de f/2.8–f/16 |
 | Sincronización del flash | Puede pedir una velocidad de obturación más rápida que la sincronización del flash | Siempre dentro de la sincronización del flash, que en la GR IV depende de la apertura |
@@ -151,8 +151,10 @@ de obturación con la que el flash no pueda sincronizar.
 
 - **Cámara:** RICOH GR IV (el modelo en color estándar). Otros modelos no son
   compatibles.
-- **Flash:** RICOH GF-2. El modo está diseñado para su potencia fija. Los demás
-  flashes siguen funcionando como antes en las demás opciones de Modo flash.
+- **Flash:** RICOH GF-2. El modo está diseñado para su potencia fija. Con otro
+  flash, GF-2 Flash Mode se aplica igualmente, pero la exposición da por hecha la
+  potencia del GF-2. Las demás opciones de Modo flash funcionan con todos los
+  flashes como antes.
 - **Tu cámara ya debe tener el firmware 1.11.** Comprueba la versión en el menú
   de configuración de la cámara.
   - Versión anterior: actualiza primero a la 1.11 de la forma normal, con el archivo oficial de RICOH.
@@ -188,7 +190,7 @@ auténtico. Después crea el firmware GF-2 Flash Mode y lo comprueba. Tarda
 aproximadamente un minuto. Cuando todo está bien, termina así:
 
 ```
-wrote output/fwdc248b.bin  (SHA-256 45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c)
+wrote output/fwdc248b.bin  (SHA-256 660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75)
 ```
 
 Si algo no está bien, muestra `refused: …` y **no escribe nada**: por ejemplo,
@@ -263,6 +265,8 @@ estado original.
 - **No se puede combinar con GR4-MonoUnlock ni con GR4-XPanUnlock.** Cada
   herramienta parte del firmware oficial, y esta herramienta rechaza sus
   archivos.
+- **Actualizar desde GR4-GF2Unlock 1.0.0:** instala el archivo nuevo de la misma
+  forma. No hace falta volver antes al firmware oficial.
 - **Una actualización oficial de RICOH elimina GF-2 Flash Mode.** Reemplaza todo
   el firmware. Ajusta antes otra opción de Modo flash (consulta
   [Volver](#volver-al-firmware-oficial)).
@@ -278,8 +282,8 @@ python3 gr4_gf2unlock.py check path/to/fwdc248b.bin
 ```
 
 Te dice si el archivo es el 1.11 oficial, la versión GF-2 Flash Mode creada por
-esta herramienta u otra cosa (también reconoce los archivos de GR4-MonoUnlock y
-GR4-XPanUnlock).
+esta herramienta u otra cosa (también reconoce los archivos de GR4-GF2Unlock 1.0.0,
+GR4-MonoUnlock y GR4-XPanUnlock).
 
 ## Riesgos
 
@@ -299,11 +303,16 @@ GR4-XPanUnlock).
 | Actualización aceptada, la cámara arranca | probado en una GR IV 1.11 |
 | GF-2 Flash Mode en el menú Modo flash | probado en una GR IV 1.11 |
 | Exposición a partir de la distancia de enfoque con el GF-2 | probado en una GR IV 1.11 |
+| GF-2 Flash Mode con otros flashes | comprobado sin la cámara; por favor, comunica tus resultados |
 | Ciclos de la palanca ADJ y del botón Fn | comprobado sin la cámara; por favor, comunica tus resultados |
 | Salida del flash 1/4, ISO fijo, filtro ND, sincronización lenta | comprobado sin la cámara; por favor, comunica tus resultados |
 | Las demás opciones de Modo flash, sin cambios | comprobado sin la cámara; por favor, comunica tus resultados |
 | Volver al 1.11 oficial restablece la cámara por completo | probado con un firmware modificado anterior en una GR IV 1.11; con esta versión aún no |
-| La herramienta reproduce exactamente el firmware probado | probado |
+| La herramienta reproduce exactamente el firmware de referencia | probado |
+
+Las pruebas con la cámara se hicieron con la versión 1.0.0. La versión 1.1.0 solo
+se diferencia de ella en las cuatro instrucciones que limitaban GF-2 Flash Mode
+al GF-2.
 
 ## Para desarrolladores
 
@@ -318,4 +327,5 @@ GR4-GF2Unlock/
 | Archivo | SHA-256 |
 | --- | --- |
 | `fwdc248b.bin` oficial de RICOH GR IV 1.11 | `a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f` |
-| `fwdc248b.bin` GF-2 Flash Mode creado por esta herramienta (1.0.0) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |
+| `fwdc248b.bin` GF-2 Flash Mode creado por esta herramienta (1.1.0) | `660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75` |
+| `fwdc248b.bin` GF-2 Flash Mode, versión 1.0.0 (solo GF-2) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |

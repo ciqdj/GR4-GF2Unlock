@@ -2,10 +2,11 @@
 """GR4-GF2Unlock: GF-2 Flash Mode for the RICOH GR IV (firmware 1.11).
 
 Adds "GF-2 Flash Mode" as a fifth Flash Mode option, the distance-based flash exposure
-mode RICOH gave the GR III in firmware 2.10. With the RICOH GF-2 flash attached, the
-camera fires the flash at a fixed power and sets aperture, ISO and shutter speed from the
-focus distance. Turns the official RICOH firmware file you downloaded yourself into the
-GF-2 Flash Mode version. A file is written only if every check passes.
+mode RICOH gave the GR III in firmware 2.10. With it selected, the camera fires the flash
+at a fixed power and sets aperture, ISO and shutter speed from the focus distance, for the
+GF-2 or any other flash on the hot shoe, as on the GR III. Turns the official RICOH
+firmware file you downloaded yourself into the GF-2 Flash Mode version. A file is written
+only if every check passes.
 
 Usage
   python3 gr4_gf2unlock.py patch  OFFICIAL_fwdc248b.bin  [-o OUTPUT_DIR]
@@ -21,15 +22,16 @@ import sys
 import zlib
 from pathlib import Path
 
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 OFFICIAL_SHA256 = 'a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f'
 OFFICIAL_BYTES = 38648776
 
-UNLOCKED_SHA256 = '45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c'
+UNLOCKED_SHA256 = '660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75'
 
 # Other known GR IV 1.11 builds that this tool should not be fed (identified by `check`).
 OTHER_KNOWN = {
+    '45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c': 'GR4-GF2Unlock 1.0.0 (GF-2 Flash Mode, GF-2 only)',
     '4c04b48c65897f2edd028df0f5e04666ca241488c81502bae0f34e040ee454eb': 'GR4-MonoUnlock 1.0.0 (monochrome looks unlocked)',
     'fa2c67d1b67e16675a0c75b98d58c519b803f049a00e40e34103e54ca9a6a6c7': 'GR4-XPanUnlock 1.0.0 (16:9 replaced by XPan, letterboxed live view)',
     '4534d44297b69bb6d305bac2ad62fef98b0caf7a6558d6da36c049dbb88f80c8': 'GR4-XPanUnlock 1.1.0 (16:9 replaced by XPan)',
@@ -37,35 +39,35 @@ OTHER_KNOWN = {
 }
 
 # The GF-2 Flash Mode changes, applied to the official file.
-PATCH_SHA256 = '6a1fe047c906fef68e1e0f916f8683107b81c734312c313d806acd9b1b6cafad'
+PATCH_SHA256 = '5851175bc7b3424155828856b6ff7506c724d2f94cff114b711c3c430748ccc2'
 PATCH_DATA = (
-    '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'
+    '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'
 )
 
 HEADER, MAGIC, FOOTER_MAGIC = 128, b'RICOH\0\0\0', b'\xa5\x5a\x5a\xa5'
@@ -274,8 +276,8 @@ def patch(source, log=print):
             sections(again) != secs:
         raise Refused('verification failed: unexpected changes')
     if sha256(out) != UNLOCKED_SHA256:
-        raise Refused('verification failed: the result differs from the camera-tested firmware')
-    log('verified: the result matches the camera-tested firmware exactly')
+        raise Refused('verification failed: the result differs from the reference firmware')
+    log('verified: the result matches the reference firmware exactly')
     return out
 
 
