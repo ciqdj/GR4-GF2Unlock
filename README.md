@@ -78,6 +78,10 @@ flash's when you make the firmware (see [Your own flash](#your-own-flash)).
   flash sync, so the flash is always in the picture. The slowest is 1/32 s, or
   up to 32 s with slow sync in a dark place.
 - **In Tv, Av and M,** the values you dial in are overridden, as on the GR III.
+- **With the ND filter set to Auto,** the exposure stays normal in bright light.
+  When the aperture and shutter speed cannot hold it, the camera lowers the ISO
+  (ISO Auto), closes the aperture, and then adds the ND filter (see
+  [Bright light](#bright-light-nd-filter-auto)).
 
 The exposure maths is RICOH's own, carried over from the GR III's firmware 2.10.
 Everything else is the official GR IV firmware, unchanged.
@@ -145,6 +149,8 @@ not have, and fixes a few weak spots:
 | Close subjects with ISO Auto | Up to about 1 EV too bright closer than 0.7 m | The aperture the distance needs, down to f/16 |
 | ISO Auto with the ND filter on | The background comes out two stops too dark | The shutter speed allows for the ND filter, so the background is exposed correctly |
 | Very close subjects in bright light | Can ask for f/19, beyond the lens's f/16 | Stays within f/2.8–f/16 |
+| Bright light, ND filter Auto | Up to one stop too bright, and the ND filter then leaves the flash two stops weak | Lower ISO, smaller aperture, then the ND filter: the picture is exposed correctly, and the flash loses only the light that had to go |
+| Close subjects, ND filter Auto | Too bright even at f/16 with a fixed ISO | The ND filter, with the aperture opened to match |
 | Flash sync | Can ask for a shutter speed faster than flash sync | Always within flash sync, which on the GR IV depends on the aperture |
 | Everything else | Turning the mode on replaces the normal flash behaviour | One Flash Mode choice among five: switch back to Flash On and the GR IV's automatic flash output whenever you like |
 
@@ -193,7 +199,7 @@ creates the GF-2 Flash Mode firmware and checks it. This takes about a minute.
 When everything is right, it ends with:
 
 ```
-wrote output/fwdc248b.bin  (SHA-256 86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a)
+wrote output/fwdc248b.bin  (SHA-256 ab00b2487126b4ab14e4872288970bb4a51f99ef7b56e57356a9603da6778bec)
 ```
 
 If something is wrong, it prints `refused: …` and writes **nothing**: for
@@ -281,16 +287,15 @@ stock.
   off, not attached or still charging. That picture will be too dark. The same
   is true on the GR III.
 - **A powerful flash close up:** when the subject is so close that even f/16
-  at the lowest ISO lets in too much flash, the picture comes out brighter than
-  planned. With ISO Auto and the ND filter set to Auto, the camera adds the ND
-  filter once it is about one stop too bright. Otherwise use Flash Output 1/4,
-  or step back.
+  at the lowest ISO lets in too much flash, the camera adds the ND filter if it
+  is set to Auto, and opens the aperture to match. With the ND filter off, or a
+  subject closer still, the picture comes out brighter than planned: use Flash
+  Output 1/4, or step back.
 - **Fixed ISO and distant subjects:** once the aperture is fully open (f/2.8),
   a subject farther away gets darker. Raise the ISO, or use ISO Auto.
 - **Bright daylight:** the shutter speed cannot go faster than flash sync
-  (1/2500 s at f/2.8–f/4). With the ND filter set to Auto, the camera uses the
-  ND filter when the light is much brighter than that. The flash then acts as a
-  fill light.
+  (1/2500 s at f/2.8–f/4, 1/4000 s from f/5.6). See
+  [Bright light](#bright-light-nd-filter-auto) below.
 - **Continuous shooting:** there is no automatic wait for the flash to recharge,
   unlike the GR III. Leave about two seconds between flash pictures.
 - **Snap Distance Priority, B and T, and movies** work as before. GF-2 Flash Mode
@@ -300,12 +305,43 @@ stock.
 - **Updating from an earlier GR4-GF2Unlock:** install the new file the same way.
   There is no need to go back to the official firmware first. Versions 1.1.0
   and 1.2.0 applied GF-2 Flash Mode only to flashes the camera detects, so it
-  had no effect with a manual flash; 1.3.0 fixes this.
+  had no effect with a manual flash; 1.3.0 fixes this. 1.4.0 adds the bright-light
+  handling with the ND filter set to Auto.
 - **An official RICOH update removes GF-2 Flash Mode.** It replaces the whole
   firmware. Set another Flash Mode first (see
   [Going back](#going-back-to-the-official-firmware)).
 - **Only for the standard GR IV.** Never install the file on another model.
 - **Before sending the camera for service,** go back to the official firmware.
+
+### Bright light (ND filter Auto)
+
+In bright light the shutter speed reaches flash sync, and the aperture GF-2 Flash
+Mode chose for the flash would let in too much daylight. With the **ND filter set
+to Auto** (shooting menu), the camera keeps the exposure normal, in this order:
+
+1. **ISO Auto:** it lowers the ISO, down to your lower limit. The aperture stays.
+2. It closes the aperture, down to f/16.
+3. When f/16 at the fastest flash-sync speed is still too bright, or the flash
+   alone is too strong even at f/16, it adds the **ND filter** (2 stops). It then
+   opens the aperture again as far as the light allows.
+
+The background is then exposed correctly. The flash keeps its planned power
+relative to the exposure, less only what the daylight forced off: in sunshine it
+acts as a fill light. Typical values in sunshine (about EV 15), Flash Output Auto
+or 1/1, ND filter Auto, with the ND filter Off in brackets where it differs:
+
+| Distance | ISO Auto | Fixed ISO 400 | Fixed ISO 3200 |
+| ---: | --- | --- | --- |
+| 0.3 m | f/11.8, ISO 100 | f/9.9 with ND (f/16, flash too bright) | f/16 with ND, still too bright (f/16, flash much too bright) |
+| 1 m | f/3.7, ISO 100 (f/3.5, too bright) | f/5.9 | f/8.4 with ND (f/16, flash too bright) |
+| 3 m | f/3.7, ISO 100 (f/3.4, ISO 141, too bright) | f/5.7 (f/2.8, too bright) | f/16 (f/5.7, too bright) |
+
+- With the ND filter **On** or **Off**, GF-2 Flash Mode works as in 1.3.0: the
+  camera does not change the ISO or the aperture for the daylight, and a sunny
+  background can come out too bright.
+- This needs the ND filter, so it applies to the standard GR IV. The GR IV HDF
+  has no ND filter: its firmware always treats the ND filter as off, so nothing
+  changes there.
 
 ### Check a firmware file
 
@@ -317,7 +353,7 @@ python3 gr4_gf2unlock.py check path/to/fwdc248b.bin
 
 It tells you whether the file is the official 1.11, the GF-2 Flash Mode version
 made by this tool (with its guide number), or something else (it also
-recognises GR4-GF2Unlock 1.0.0, 1.1.0 and 1.2.0, GR4-MonoUnlock and
+recognises GR4-GF2Unlock 1.0.0 to 1.3.0, GR4-MonoUnlock and
 GR4-XPanUnlock files).
 
 ## Risks
@@ -344,6 +380,7 @@ GR4-XPanUnlock files).
 | Close subjects with ISO Auto (exact aperture) | checked offline; please report your results |
 | ADJ lever and Fn button cycles | checked offline; please report your results |
 | Flash Output 1/4, fixed ISO, ND filter, slow sync | checked offline; please report your results |
+| Bright light with the ND filter set to Auto (1.4.0) | checked offline; please report your results |
 | Other Flash Modes unchanged | checked offline; please report your results |
 | Going back to the official 1.11 restores the camera completely | tested with earlier modified firmware on a GR IV 1.11; not yet with this version |
 | The tool reproduces the reference firmware exactly | tested |
@@ -351,7 +388,8 @@ GR4-XPanUnlock files).
 The camera tests were done with version 1.0.0. Since then, the guide number
 can be set and close subjects with ISO Auto get the exact aperture (1.2.0), and
 GF-2 Flash Mode applies to flashes the camera does not detect, as on the GR III
-(1.3.0).
+(1.3.0), and the ND filter set to Auto keeps the exposure normal in bright light
+(1.4.0).
 
 ## For developers
 
@@ -366,7 +404,8 @@ GR4-GF2Unlock/
 | File | SHA-256 |
 | --- | --- |
 | official RICOH GR IV 1.11 `fwdc248b.bin` | `a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f` |
-| GF-2 Flash Mode `fwdc248b.bin` made by this tool (1.3.0, guide number 3) | `86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a` |
+| GF-2 Flash Mode `fwdc248b.bin` made by this tool (1.4.0, guide number 3) | `ab00b2487126b4ab14e4872288970bb4a51f99ef7b56e57356a9603da6778bec` |
+| GF-2 Flash Mode `fwdc248b.bin`, version 1.3.0 | `86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a` |
 | GF-2 Flash Mode `fwdc248b.bin`, version 1.2.0 | `225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22` |
 | GF-2 Flash Mode `fwdc248b.bin`, version 1.1.0 | `660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75` |
 | GF-2 Flash Mode `fwdc248b.bin`, version 1.0.0 (GF-2 only) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |

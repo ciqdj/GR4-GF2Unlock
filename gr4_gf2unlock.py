@@ -6,8 +6,10 @@ mode RICOH gave the GR III in firmware 2.10. With it selected, the camera sets a
 ISO and shutter speed from the focus distance and the flash's guide number: the GF-2's (3)
 by default, or your own flash's with --gn. As on the GR III, it applies to the GF-2 and to
 flashes the camera does not communicate with (manual flashes); a P-TTL flash works as
-Flash On. Turns the official RICOH firmware file you downloaded yourself into the GF-2
-Flash Mode version. A file is written only if every check passes.
+Flash On. With the ND filter set to Auto (GR IV, not the HDF), when the aperture and shutter
+speed cannot hold a normal exposure, the camera uses the ND filter. Turns the official RICOH
+firmware file you downloaded yourself into the GF-2 Flash Mode version. A file is written
+only if every check passes.
 
 Usage
   python3 gr4_gf2unlock.py patch  OFFICIAL_fwdc248b.bin  [--gn GN] [-o OUTPUT_DIR]
@@ -24,15 +26,17 @@ import sys
 import zlib
 from pathlib import Path
 
-VERSION = '1.3.0'
+VERSION = '1.4.0'
 
 OFFICIAL_SHA256 = 'a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f'
 OFFICIAL_BYTES = 38648776
 
-UNLOCKED_SHA256 = '86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a'
+UNLOCKED_SHA256 = 'ab00b2487126b4ab14e4872288970bb4a51f99ef7b56e57356a9603da6778bec'
 
 # Other known GR IV 1.11 builds that this tool should not be fed (identified by `check`).
 OTHER_KNOWN = {
+    '86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a':
+        'GR4-GF2Unlock 1.3.0 (GF-2 Flash Mode, guide number 2.95, the default; ND Auto)',
     '225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22':
         'GR4-GF2Unlock 1.2.0 (GF-2 Flash Mode, guide number 2.95, the default; not for manual flashes)',
     '660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75':
@@ -47,50 +51,58 @@ OTHER_KNOWN = {
 # The guide number GF-2 Flash Mode plans with: one word in the added code, 16*log2(GN) with GN
 # at ISO 100 in metres. The change data below sets the GR III's constant, 25 (GN 2.95); --gn
 # writes another value there and nothing else.
-GN_OFFSET = 0x1a560
+GN_OFFSET = 0x1a860
 GN_DEFAULT = 25
 GN_CODES = range(0, 105)            # GN 1 .. 90, the range checked offline
 # Decoded contents of the reference firmware (default GN), to recognise other GN builds.
-REFERENCE_PAYLOAD_SHA256 = 'ef2a1fe30969eda800de7e30cc120d5c24cad875bcb0be6b37da620b3d03237b'
+REFERENCE_PAYLOAD_SHA256 = '68c31ffba82241b7af24531c33c649d7417736030144e0a67f1dd4a3ce71035f'
 # Earlier versions with a GN word, so that `check` still names their --gn files:
 # (version, GN offset, decoded reference with the default GN, note).
 LEGACY_GN = (
+    ('1.3.0', 0x1a560, 'ef2a1fe30969eda800de7e30cc120d5c24cad875bcb0be6b37da620b3d03237b',
+     '; ND Auto as on the GR III'),
     ('1.2.0', 0x1a568, 'cfe81cdeaa129fe3cb43ff2bd721d9b1879eccad640ac28935c48a4a754c6081',
      '; not for manual flashes'),
 )
 
 # The GF-2 Flash Mode changes, applied to the official file.
-PATCH_SHA256 = '09a11069a717e44d4ee86ef3d2f07c43f9b41143feaebbf30d5fe84fe4730747'
+PATCH_SHA256 = '8fb7af80d172637d341b09821e06d48b68e69620e1a9d30172f372e1d7bf968f'
 PATCH_DATA = (
-    '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'
-    '1L5v27vtgVtH3ChvWGJjfAf3y/j9A+FzoBk='
+    'eNrtVm9sHMUVf3t3ju/2DntSu8E5h+QgtHUhlEsJkY0RXhMbmZrCuS6ojVxl80dyjCJ6TkhIJVJt'
+    '7DMNdpxc20gVTgzTRKpQ+gEHtQJFTb2pCW0d1DpKP1TYErs33XNIciMnQG1ViOt763XImSD1S7/d'
+    'SKuZN29m3u/9+c0OKK++DaA+DMVWbMVWbMVWbMVWbMVWbP9jC0BCVAH0B80jztS5KccHHaISIEry'
+    'H8embIYy8+RNqFdQjqAMuC/gzf/BnLL95hMZ2lsCMBQAbldOtGaqtg9fAsZFxHzNWZG/315Ce3AM'
+    '145N19wF7eumO9tnnrrvw8DEdzNlA/flqrBnYF4PxNNOcCTtMGZeB2gTCtqpU4/mzOisXI49/PZN'
+    'ad4zK49Xd8vAvdfcvr9+s9TqP5HsP9fk+Xs/yL1X/UFuS/3Hckt45kma2xqe+dvm8MeufjOOrfAZ'
+    'adbPSVGflBD+t9RxLVOZq0e/xhVg5J/qzuMcYVDSRiYEcBlaP5MQ44J827agj4FfYbDBFwPLx/bb'
+    'SlqzooiVaeb1yvigYz40ixi33sDoYmv1sLUitlYPG47/Rdiq56Rd/bzUq78EV/VNuMDDFf4c1w39'
+    'YlygWQwGHcsXEjWIr9PfLPo3aZkHMT/fpNjq3KZxENdsQJnGiWqf+NHXJh2oaBaQ5PaxxCTWwfdE'
+    'quSoM7Ju0gbj547CHs0sfePHdiQ26DCjxefWB/qNtaXuuy0hnsV87LuNrw5p3GYqSOOVkFj2y2ah'
+    'hefkr8OGrEM72sCIrAVVLENMEB6RcZyjeQj/RU6XP54JpLndH9alFX7L1ZnqGTc2QL4DF4wNO3u0'
+    'fHa5JbMATwuFHbBO9nAbtEGnGnEkY/lsVZyL498wLIVp1s7YaPZP8Q1WEnsN2oUW56vJr2Bs2KmK'
+    'w5if7bdibH+G1nWz0awP2mwlxk89j2NcZ98OcNIXa7L8sR5rZ3z+DOTOeJPZk0GCXC7F/RFt2AFo'
+    'tF5I5LN3Y57KMH5JPprtgI2ig/OLKexL4JCV4vyExoyMAt8XcWb4VL3RegLPaDJ7M0HsdyL2SHzY'
+    'aXHxoU8xwtoufAZfmjK5CNBcEnOfwE/n4gX4oUAMp/cmnszs1vPZ33T2WXv00ey7mN8gPCNU4imu'
+    '+3RTOfH7Mt0FRupbZ72+0b0ctMPaYO73fPbdkUd2o38XH7Gn/fE+i2zsQnn12mZrF/q1J57PnnDP'
+    '1TJJGM1S7rEevwNxELzhKVFW22tt2MvtsYY/272g27yb2xPKG9MM17EkjPmgz41TKdZmGfrhxggo'
+    'xgkba/lsBF6yutFOkuOH8yncN1NeLlIcxiheEOsBFR61kAeWphsZdhJkJWDcT/9OWneFhKa+LYkT'
+    'yvhp2bm6WYTVmIz0x2WLOiK/7dbRrNxDOb3ypjwUTkqqMW1yVW4Qx3RPsCEmQ5R7gPd/AvnsEoxX'
+    'AM9XYqbYgXXnw5ysAOQZ4lWAXwgR7jQ/BYjtQ+RnxBh0jsGkQ5xKhH0CqL61tEP8oVjd7nHkI48j'
+    'RldIEEeWbf2cH+uJH0e/yI/1Lj/+ivx4LHMrbiR1ygfmF3NN/o4EJu0A8R/j4sYI40IxWYgDw9rf'
+    'bYxmVdaCHOmxSuPcDmAda9rPMktYo0XxuRs5Qfcy2bsRI7Tlx9pXkQ9B5AMgPw5hvM6uOmsTnxTW'
+    'j+e10LwoRX8DuobjYWcJxVXnp9TES1YS7QbhabsHeaWkaS0XKazjyuSwUw7WWIgZlnU8JDron5Dg'
+    'dueJZtGR4Bd7UUZ+jwcx/wy57sfej/dMCdaTWw8bQZbiP4l8pVpw86/G5UOezws5v9kXgGcwTvC+'
+    'kujLKPpjmRTeJ1fz+WgKaz+AMWFYrzQX0A5YOIdc5KJct1y8EYzvA4iH7JIPJJP9hTpkeC8uxlAC'
+    'TRbl6AtYokxSXa1CLAzjtQPP35HmF1nicczBASv0f/KRxuQT+UZ+kQ+3tOHxqMAP5OuX+YG5Hw/g'
+    'Pf3Z/eXCF99v7WDEnwp7BQMsnzY6+0J3Op/di3yPGMPOcqxdOp9qlWp2oV7B4DdqNsBuYc/1r23e'
+    'HizYM6x5vqK9m/iaRHu70R4bms8X26hIE/1rjGK+7nnL9TMcvdONpy+6Vq5TB3IP9g/k1kcHcnrf'
+    'eaer5LzzLH5VE4P4jjlzNYD9zOEzl2AmJhbu0ZF3JjDWHXQvRgHv65F3TDtoTiD/O9x31NS5+TEb'
+    'hzIf6qfOmU5UNXIrid/YlnvvtZqb3ml4v0dJ/oE55e5d5skL77SveHId6sl2Gb7zFuzVLHq3YZyG'
+    'aI7iO8cO4n/7CN5XaeQtF0Hv/Rbwenq7RS50tsMdK1P0hMT3XkUJfigfINkH3O/HD+64cy/JiVq1'
+    'Yht+KL9I8vYHyv0fNQRRv2auUL/m00L92nWF+rW1hXp90X590f6+jkJ8fXohvpdfLNz/slG4/+Ai'
+    '+wcX2T98qVB/+GqhntcU6vmaAv3K52Y8fPgGwP/2yufmPHzC78rGdm+/wP0kv+ftF7gf5deDhfrX'
+    'awv1Ji/Um/8o0NftcuOBNV/RR/Gp63f3K7Geik/wHoCGfUdI/ipy0E//kIafaiQvpbcNyV1f/yfJ'
+    'fw/BlS2x7BXo2vawe9611341XJYdgq5fuPaulsKVthLU9zS5Mr5den34/Rc5K/Le'
 )
 
 HEADER, MAGIC, FOOTER_MAGIC = 128, b'RICOH\0\0\0', b'\xa5\x5a\x5a\xa5'

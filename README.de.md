@@ -83,6 +83,10 @@ eigenen Blitzes an (siehe [Eigenes Blitzgerät](#eigenes-blitzgerät)).
   dunklen Ort.
 - **In Tv, Av und M** werden die von Ihnen eingestellten Werte übergangen, wie
   bei der GR III.
+- **Mit Neutralfilter auf Auto** bleibt die Belichtung bei hellem Licht normal.
+  Wenn Blende und Verschlusszeit sie nicht mehr halten können, senkt die Kamera
+  die ISO (ISO-Automatik), schließt die Blende und schaltet dann den
+  Neutralfilter dazu (siehe [Helles Licht](#helles-licht-neutralfilter-auto)).
 
 Die Belichtungsberechnung stammt von RICOH selbst, übernommen aus der Firmware
 2.10 der GR III. Alles andere ist die offizielle Firmware der GR IV,
@@ -156,6 +160,8 @@ Hardware, die die GR III nicht hat, und behebt einige Schwachstellen:
 | Nahe Motive mit ISO-Automatik | Bis zu etwa 1 EV zu hell, näher als 0,7 m | Die Blende, die die Entfernung verlangt, bis f/16 |
 | ISO-Automatik mit eingeschaltetem Neutralfilter | Der Hintergrund wird zwei Stufen zu dunkel | Die Verschlusszeit berücksichtigt den Neutralfilter, sodass der Hintergrund richtig belichtet wird |
 | Sehr nahe Motive bei hellem Licht | Kann f/19 verlangen, jenseits von f/16 des Objektivs | Bleibt innerhalb von f/2.8–f/16 |
+| Helles Licht, Neutralfilter Auto | Bis zu eine Stufe zu hell, und der Neutralfilter macht den Blitz dann zwei Stufen zu schwach | Niedrigere ISO, kleinere Blende, dann der Neutralfilter: Das Bild wird richtig belichtet, und der Blitz verliert nur das Licht, das wegfallen musste |
+| Nahe Motive, Neutralfilter Auto | Selbst bei f/16 mit fester ISO zu hell | Der Neutralfilter, mit entsprechend weiter geöffneter Blende |
 | Blitzsynchronisation | Kann eine kürzere Verschlusszeit als die Blitzsynchronzeit verlangen | Immer innerhalb der Blitzsynchronzeit, die bei der GR IV von der Blende abhängt |
 | Alles andere | Das Einschalten des Modus ersetzt das normale Blitzverhalten | Eine von fünf Auswahlmöglichkeiten im Blitzmodus: Wechseln Sie jederzeit zurück zu Blitz Ein und zur automatischen Blitzleistung der GR IV |
 
@@ -208,7 +214,7 @@ gegeben haben. Dann erstellt es die Firmware mit GF-2-Blitzmodus und prüft sie.
 Das dauert etwa eine Minute. Wenn alles stimmt, endet es mit:
 
 ```
-wrote output/fwdc248b.bin  (SHA-256 86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a)
+wrote output/fwdc248b.bin  (SHA-256 ab00b2487126b4ab14e4872288970bb4a51f99ef7b56e57356a9603da6778bec)
 ```
 
 Wenn etwas nicht stimmt, gibt es `refused: …` aus und schreibt **nichts**: zum
@@ -303,17 +309,17 @@ Sie, und Ihre Kamera ist wieder im Originalzustand.
   wenn der Blitz ausgeschaltet, nicht aufgesteckt oder noch nicht wieder geladen
   ist. Dieses Bild wird zu dunkel. Das ist bei der GR III genauso.
 - **Ein leistungsstarker Blitz aus der Nähe:** Ist das Motiv so nah, dass selbst
-  f/16 bei der niedrigsten ISO zu viel Blitzlicht durchlässt, wird das Bild
-  heller als geplant. Mit ISO-Automatik und Neutralfilter auf Auto schaltet die
-  Kamera den Neutralfilter dazu, sobald es etwa eine Stufe zu hell ist.
-  Verwenden Sie sonst Blitzleistung 1/4, oder gehen Sie weiter weg.
+  f/16 bei der niedrigsten ISO zu viel Blitzlicht durchlässt, schaltet die
+  Kamera den Neutralfilter dazu, wenn er auf Auto gestellt ist, und öffnet die
+  Blende entsprechend. Bei ausgeschaltetem Neutralfilter oder einem noch näheren
+  Motiv wird das Bild heller als geplant: Verwenden Sie Blitzleistung 1/4, oder
+  gehen Sie weiter weg.
 - **Feste ISO und weit entfernte Motive:** Sobald die Blende ganz offen ist
   (f/2.8), wird ein weiter entferntes Motiv dunkler. Erhöhen Sie die ISO, oder
   verwenden Sie ISO-Automatik.
 - **Helles Tageslicht:** Die Verschlusszeit kann nicht kürzer als die
-  Blitzsynchronzeit werden (1/2500 s bei f/2.8–f/4). Ist der Neutralfilter auf
-  Auto gestellt, verwendet die Kamera den Neutralfilter, wenn das Licht noch
-  deutlich heller ist. Der Blitz wirkt dann als Aufhelllicht.
+  Blitzsynchronzeit werden (1/2500 s bei f/2.8–f/4, 1/4000 s ab f/5.6). Siehe
+  [Helles Licht](#helles-licht-neutralfilter-auto) unten.
 - **Serienaufnahmen:** Anders als bei der GR III wird nicht automatisch gewartet,
   bis der Blitz wieder geladen ist. Lassen Sie etwa zwei Sekunden zwischen
   Blitzaufnahmen.
@@ -326,7 +332,8 @@ Sie, und Ihre Kamera ist wieder im Originalzustand.
   auf die gleiche Weise. Sie müssen nicht zuerst zur offiziellen Firmware
   zurückkehren. Die Versionen 1.1.0 und 1.2.0 wendeten den GF-2-Blitzmodus nur
   auf Blitzgeräte an, die die Kamera erkennt, sodass er mit einem manuellen
-  Blitz keine Wirkung hatte; 1.3.0 behebt das.
+  Blitz keine Wirkung hatte; 1.3.0 behebt das. 1.4.0 ergänzt die Behandlung von
+  hellem Licht mit Neutralfilter auf Auto.
 - **Ein offizielles Update von RICOH entfernt den GF-2-Blitzmodus.** Es ersetzt
   die gesamte Firmware. Stellen Sie zuerst einen anderen Blitzmodus ein (siehe
   [Zurück zur offiziellen Firmware](#zurück-zur-offiziellen-firmware)).
@@ -334,6 +341,41 @@ Sie, und Ihre Kamera ist wieder im Originalzustand.
   anderen Modell.
 - **Bevor Sie die Kamera zum Service schicken,** kehren Sie zur offiziellen
   Firmware zurück.
+
+### Helles Licht (Neutralfilter Auto)
+
+Bei hellem Licht erreicht die Verschlusszeit die Blitzsynchronzeit, und die
+Blende, die der GF-2-Blitzmodus für den Blitz gewählt hat, würde zu viel
+Tageslicht durchlassen. Ist der **Neutralfilter auf Auto** gestellt
+(Aufnahmemenü), hält die Kamera die Belichtung normal, und zwar in dieser
+Reihenfolge:
+
+1. **ISO-Automatik:** Sie senkt die ISO, bis zu Ihrer Untergrenze. Die Blende
+   bleibt.
+2. Sie schließt die Blende, bis f/16.
+3. Ist f/16 bei der kürzesten Blitzsynchronzeit immer noch zu hell, oder ist
+   der Blitz allein selbst bei f/16 zu stark, schaltet sie den
+   **Neutralfilter** (2 Stufen) dazu. Dann öffnet sie die Blende wieder so
+   weit, wie es das Licht erlaubt.
+
+Der Hintergrund wird dann richtig belichtet. Der Blitz behält seine geplante
+Leistung im Verhältnis zur Belichtung, abzüglich nur dessen, was das Tageslicht
+erzwungen hat: Bei Sonnenschein wirkt er als Aufhelllicht. Typische Werte bei
+Sonnenschein (etwa EV 15), Blitzleistung Auto oder 1/1, Neutralfilter Auto, in
+Klammern mit Neutralfilter aus, wo es abweicht:
+
+| Entfernung | ISO-Automatik | Feste ISO 400 | Feste ISO 3200 |
+| ---: | --- | --- | --- |
+| 0,3 m | f/11.8, ISO 100 | f/9.9 mit Neutralfilter (f/16, Blitz zu hell) | f/16 mit Neutralfilter, noch immer zu hell (f/16, Blitz viel zu hell) |
+| 1 m | f/3.7, ISO 100 (f/3.5, zu hell) | f/5.9 | f/8.4 mit Neutralfilter (f/16, Blitz zu hell) |
+| 3 m | f/3.7, ISO 100 (f/3.4, ISO 141, zu hell) | f/5.7 (f/2.8, zu hell) | f/16 (f/5.7, zu hell) |
+
+- Mit Neutralfilter **Ein** oder **Aus** funktioniert der GF-2-Blitzmodus wie
+  in 1.3.0: Die Kamera ändert ISO und Blende nicht wegen des Tageslichts, und
+  ein sonniger Hintergrund kann zu hell werden.
+- Dafür ist der Neutralfilter nötig, daher gilt dies für die normale GR IV. Die
+  GR IV HDF hat keinen Neutralfilter: Ihre Firmware behandelt den Neutralfilter
+  immer als ausgeschaltet, sodass sich dort nichts ändert.
 
 ### Firmware-Datei prüfen
 
@@ -345,7 +387,7 @@ python3 gr4_gf2unlock.py check path/to/fwdc248b.bin
 
 Es sagt Ihnen, ob die Datei die offizielle 1.11, die mit diesem Werkzeug
 erstellte Version mit GF-2-Blitzmodus (mit ihrer Leitzahl) oder etwas anderes
-ist (es erkennt auch Dateien von GR4-GF2Unlock 1.0.0, 1.1.0 und 1.2.0,
+ist (es erkennt auch Dateien von GR4-GF2Unlock 1.0.0 bis 1.3.0,
 GR4-MonoUnlock und GR4-XPanUnlock).
 
 ## Risiken
@@ -375,6 +417,7 @@ GR4-MonoUnlock und GR4-XPanUnlock).
 | Nahe Motive mit ISO-Automatik (exakte Blende) | offline geprüft; bitte melden Sie Ihre Ergebnisse |
 | Durchschalten mit ADJ-Hebel und Fn-Taste | offline geprüft; bitte melden Sie Ihre Ergebnisse |
 | Blitzleistung 1/4, feste ISO, Neutralfilter, Langzeitsynchronisation | offline geprüft; bitte melden Sie Ihre Ergebnisse |
+| Helles Licht mit Neutralfilter auf Auto (1.4.0) | offline geprüft; bitte melden Sie Ihre Ergebnisse |
 | Andere Blitzmodi unverändert | offline geprüft; bitte melden Sie Ihre Ergebnisse |
 | Die Rückkehr zur offiziellen 1.11 stellt die Kamera vollständig wieder her | getestet mit früherer veränderter Firmware auf einer GR IV 1.11; mit dieser Version noch nicht |
 | Das Werkzeug reproduziert die Referenz-Firmware exakt | getestet |
@@ -382,7 +425,8 @@ GR4-MonoUnlock und GR4-XPanUnlock).
 Die Kameratests wurden mit Version 1.0.0 durchgeführt. Seitdem lässt sich die
 Leitzahl einstellen, und nahe Motive mit ISO-Automatik erhalten die exakte
 Blende (1.2.0); außerdem gilt der GF-2-Blitzmodus, wie bei der GR III, für
-Blitzgeräte, die die Kamera nicht erkennt (1.3.0).
+Blitzgeräte, die die Kamera nicht erkennt (1.3.0), und mit Neutralfilter auf
+Auto bleibt die Belichtung bei hellem Licht normal (1.4.0).
 
 ## Für Entwickler
 
@@ -397,7 +441,8 @@ GR4-GF2Unlock/
 | Datei | SHA-256 |
 | --- | --- |
 | offizielle `fwdc248b.bin` 1.11 der RICOH GR IV | `a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f` |
-| `fwdc248b.bin` mit GF-2-Blitzmodus, erstellt mit diesem Werkzeug (1.3.0, Leitzahl 3) | `86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a` |
+| `fwdc248b.bin` mit GF-2-Blitzmodus, erstellt mit diesem Werkzeug (1.4.0, Leitzahl 3) | `ab00b2487126b4ab14e4872288970bb4a51f99ef7b56e57356a9603da6778bec` |
+| `fwdc248b.bin` mit GF-2-Blitzmodus, Version 1.3.0 | `86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a` |
 | `fwdc248b.bin` mit GF-2-Blitzmodus, Version 1.2.0 | `225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22` |
 | `fwdc248b.bin` mit GF-2-Blitzmodus, Version 1.1.0 | `660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75` |
 | `fwdc248b.bin` mit GF-2-Blitzmodus, Version 1.0.0 (nur GF-2) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |

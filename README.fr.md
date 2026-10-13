@@ -83,6 +83,10 @@ celui de votre propre flash en créant le firmware (voir
   sombre.
 - **En Tv, Av et M,** les valeurs que vous réglez sont remplacées, comme sur le
   GR III.
+- **Avec Filtre ND réglé sur Auto,** l'exposition reste normale en pleine
+  lumière. Lorsque l'ouverture et la vitesse d'obturation ne suffisent plus,
+  l'appareil abaisse la sensibilité ISO (ISO Auto), ferme l'ouverture, puis
+  ajoute le filtre ND (voir [Pleine lumière](#pleine-lumière-filtre-nd-auto)).
 
 Le calcul de l'exposition est celui de RICOH, repris du firmware 2.10 du GR III.
 Tout le reste est le firmware officiel du GR IV, inchangé.
@@ -156,6 +160,8 @@ le GR III n'a pas, et corrige quelques points faibles :
 | Sujets proches avec ISO Auto | Jusqu'à environ 1 IL trop clair en dessous de 0,7 m | L'ouverture qu'exige la distance, jusqu'à f/16 |
 | ISO Auto avec le filtre ND activé | L'arrière-plan est sous-exposé de deux IL | La vitesse d'obturation tient compte du filtre ND, l'arrière-plan est donc correctement exposé |
 | Sujets très proches en pleine lumière | Peut demander f/19, au-delà du f/16 de l'objectif | Reste dans la plage f/2.8–f/16 |
+| Pleine lumière, filtre ND Auto | Jusqu'à un IL trop clair, puis le filtre ND rend le flash trop faible de deux IL | ISO plus bas, ouverture plus petite, puis filtre ND : la photo est correctement exposée, et le flash ne perd que la lumière qu'il fallait retirer |
+| Sujets proches, filtre ND Auto | Trop clair même à f/16 avec un ISO fixe | Le filtre ND, avec l'ouverture agrandie en conséquence |
 | Synchro flash | Peut demander une vitesse d'obturation plus rapide que la synchro flash | Toujours dans la plage de synchro flash, qui dépend de l'ouverture sur le GR IV |
 | Tout le reste | Activer le mode remplace le comportement normal du flash | Une option du Mode flash parmi cinq : revenez à Flash forcé et à l'intensité du flash automatique du GR IV quand vous voulez |
 
@@ -207,7 +213,7 @@ L'outil vérifie d'abord que vous lui avez donné le véritable fichier officiel
 environ une minute. Si tout est correct, il se termine ainsi :
 
 ```
-wrote output/fwdc248b.bin  (SHA-256 86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a)
+wrote output/fwdc248b.bin  (SHA-256 ab00b2487126b4ab14e4872288970bb4a51f99ef7b56e57356a9603da6778bec)
 ```
 
 En cas de problème, il affiche `refused: …` et n'écrit **rien** : par exemple
@@ -300,17 +306,16 @@ appareil retrouve son état d'origine.
   lorsque le flash est éteint, non fixé ou encore en recharge. Cette photo sera
   alors trop sombre. C'est aussi le cas sur le GR III.
 - **Un flash puissant de près :** lorsque le sujet est si proche que même f/16
-  à l'ISO le plus bas laisse entrer trop de lumière du flash, la photo est plus
-  claire que prévu. En ISO Auto avec Filtre ND réglé sur Auto, l'appareil
-  ajoute le filtre ND dès que l'image est trop claire d'environ un IL. Sinon,
-  utilisez Intensité du flash 1/4, ou reculez.
+  à l'ISO le plus bas laisse entrer trop de lumière du flash, l'appareil ajoute
+  le filtre ND si Filtre ND est réglé sur Auto, et agrandit l'ouverture en
+  conséquence. Avec le filtre ND désactivé, ou un sujet plus proche encore, la
+  photo est plus claire que prévu : utilisez Intensité du flash 1/4, ou reculez.
 - **ISO fixe et sujets éloignés :** une fois l'ouverture au maximum (f/2.8), un
   sujet plus éloigné devient plus sombre. Augmentez la sensibilité ISO, ou
   utilisez ISO Auto.
 - **Plein soleil :** la vitesse d'obturation ne peut pas être plus rapide que la
-  synchro flash (1/2500 s à f/2.8–f/4). Avec Filtre ND réglé sur Auto,
-  l'appareil utilise le filtre ND lorsque la lumière est nettement plus forte
-  que cela. Le flash sert alors de lumière d'appoint.
+  synchro flash (1/2500 s à f/2.8–f/4, 1/4000 s à partir de f/5.6). Voir
+  [Pleine lumière](#pleine-lumière-filtre-nd-auto) ci-dessous.
 - **Rafale :** contrairement au GR III, il n'y a pas d'attente automatique de la
   recharge du flash. Laissez environ deux secondes entre deux photos au flash.
 - **Priorité dist. inst. AE, B et T, ainsi que la vidéo** fonctionnent comme
@@ -321,13 +326,50 @@ appareil retrouve son état d'origine.
   fichier de la même façon. Inutile de revenir d'abord au firmware officiel.
   Les versions 1.1.0 et 1.2.0 n'appliquaient le Mode flash GF-2 qu'aux flashs
   détectés par l'appareil, si bien qu'il restait sans effet avec un flash
-  manuel ; la 1.3.0 corrige ce point.
+  manuel ; la 1.3.0 corrige ce point. La 1.4.0 ajoute la gestion de la pleine
+  lumière avec Filtre ND réglé sur Auto.
 - **Une mise à jour officielle de RICOH supprime le Mode flash GF-2.** Elle
   remplace l'intégralité du firmware. Réglez d'abord une autre option du Mode
   flash (voir [Revenir au firmware officiel](#revenir-au-firmware-officiel)).
 - **Uniquement pour le GR IV standard.** N'installez jamais ce fichier sur un
   autre modèle.
 - **Avant d'envoyer l'appareil en réparation,** revenez au firmware officiel.
+
+### Pleine lumière (filtre ND Auto)
+
+En pleine lumière, la vitesse d'obturation atteint la synchro flash, et
+l'ouverture choisie par le Mode flash GF-2 pour le flash laisserait entrer trop
+de lumière du jour. Avec **Filtre ND réglé sur Auto** (menu de prise de vue),
+l'appareil maintient une exposition normale, dans cet ordre :
+
+1. **ISO Auto :** il abaisse la sensibilité ISO, jusqu'à votre limite inférieure.
+   L'ouverture ne change pas.
+2. Il ferme l'ouverture, jusqu'à f/16.
+3. Lorsque f/16 à la vitesse de synchro flash la plus rapide reste trop clair,
+   ou que le flash seul est trop fort même à f/16, il ajoute le **filtre ND**
+   (2 IL). Il agrandit ensuite à nouveau l'ouverture autant que la lumière le
+   permet.
+
+L'arrière-plan est alors correctement exposé. Le flash garde la puissance prévue
+par rapport à l'exposition, moins seulement ce que la lumière du jour a obligé à
+retirer : en plein soleil, il sert de lumière d'appoint. Valeurs typiques en
+plein soleil (environ IL 15), Intensité du flash Auto ou 1/1, Filtre ND sur
+Auto, avec entre parenthèses les valeurs avec le filtre ND désactivé
+lorsqu'elles diffèrent :
+
+| Distance | ISO Auto | ISO 400 fixe | ISO 3200 fixe |
+| ---: | --- | --- | --- |
+| 0,3 m | f/11.8, ISO 100 | f/9.9 avec ND (f/16, flash trop fort) | f/16 avec ND, encore trop clair (f/16, flash beaucoup trop fort) |
+| 1 m | f/3.7, ISO 100 (f/3.5, trop clair) | f/5.9 | f/8.4 avec ND (f/16, flash trop fort) |
+| 3 m | f/3.7, ISO 100 (f/3.4, ISO 141, trop clair) | f/5.7 (f/2.8, trop clair) | f/16 (f/5.7, trop clair) |
+
+- Avec le filtre ND **activé** ou **désactivé**, le Mode flash GF-2 fonctionne
+  comme en 1.3.0 : l'appareil ne modifie ni la sensibilité ISO ni l'ouverture
+  en fonction de la lumière du jour, et un arrière-plan ensoleillé peut être
+  trop clair.
+- Cette fonction nécessite le filtre ND : elle concerne donc le GR IV standard.
+  Le GR IV HDF n'a pas de filtre ND : son firmware considère toujours le filtre
+  ND comme désactivé, si bien que rien n'y change.
 
 ### Vérifier un fichier de firmware
 
@@ -339,7 +381,7 @@ python3 gr4_gf2unlock.py check path/to/fwdc248b.bin
 
 Cette commande vous indique si le fichier est le 1.11 officiel, la version avec
 Mode flash GF-2 créée par cet outil (avec son nombre guide) ou autre chose
-(elle reconnaît aussi les fichiers GR4-GF2Unlock 1.0.0, 1.1.0 et 1.2.0,
+(elle reconnaît aussi les fichiers GR4-GF2Unlock 1.0.0 à 1.3.0,
 GR4-MonoUnlock et GR4-XPanUnlock).
 
 ## Risques
@@ -368,6 +410,7 @@ GR4-MonoUnlock et GR4-XPanUnlock).
 | Sujets proches avec ISO Auto (ouverture exacte) | vérifié hors ligne ; merci de signaler vos résultats |
 | Cycles du levier ADJ et de la touche Fn | vérifié hors ligne ; merci de signaler vos résultats |
 | Intensité du flash 1/4, ISO fixe, filtre ND, synchro lente | vérifié hors ligne ; merci de signaler vos résultats |
+| Pleine lumière avec Filtre ND réglé sur Auto (1.4.0) | vérifié hors ligne ; merci de signaler vos résultats |
 | Autres options du Mode flash inchangées | vérifié hors ligne ; merci de signaler vos résultats |
 | Revenir au 1.11 officiel restaure entièrement l'appareil | testé avec un firmware modifié antérieur sur un GR IV 1.11 ; pas encore avec cette version |
 | L'outil reproduit exactement le firmware de référence | testé |
@@ -375,7 +418,8 @@ GR4-MonoUnlock et GR4-XPanUnlock).
 Les tests sur l'appareil ont été faits avec la version 1.0.0. Depuis, le nombre
 guide peut être réglé et les sujets proches en ISO Auto reçoivent l'ouverture
 exacte (1.2.0), et le Mode flash GF-2 s'applique aux flashs que l'appareil ne
-détecte pas, comme sur le GR III (1.3.0).
+détecte pas, comme sur le GR III (1.3.0), et Filtre ND réglé sur Auto maintient
+une exposition normale en pleine lumière (1.4.0).
 
 ## Pour les développeurs
 
@@ -390,7 +434,8 @@ GR4-GF2Unlock/
 | Fichier | SHA-256 |
 | --- | --- |
 | `fwdc248b.bin` officiel RICOH GR IV 1.11 | `a2f664dfca034059eb0fd6e18ab08684c326b4a034d85c164dad7e1ec9b5655f` |
-| `fwdc248b.bin` avec Mode flash GF-2 créé par cet outil (1.3.0, nombre guide 3) | `86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a` |
+| `fwdc248b.bin` avec Mode flash GF-2 créé par cet outil (1.4.0, nombre guide 3) | `ab00b2487126b4ab14e4872288970bb4a51f99ef7b56e57356a9603da6778bec` |
+| `fwdc248b.bin` avec Mode flash GF-2, version 1.3.0 | `86abac009d3664ede49ef912073d00b8fb15ac7e9867265aecda581c932db41a` |
 | `fwdc248b.bin` avec Mode flash GF-2, version 1.2.0 | `225258d201217bac3416de79de94aea4d05c6aab74d4f026c30280ac8a624c22` |
 | `fwdc248b.bin` avec Mode flash GF-2, version 1.1.0 | `660df9de1e611325fc41df2e42499028c7296c037201b7fd7be828b813ec1c75` |
 | `fwdc248b.bin` avec Mode flash GF-2, version 1.0.0 (GF-2 uniquement) | `45a2edd33a0e0783458b1052ad8b67514f48b45a5db7b47013543eb46d247f0c` |
